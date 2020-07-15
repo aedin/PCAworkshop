@@ -1,0 +1,14 @@
+Package: PCAworkshop
+Type: Package
+Title: A introduction to PCA in R
+Version: 0.1.0
+Author: Aedin Culhane
+Maintainer: Aedin Culhane <aedin@ds.dfci.harvard.edu>
+Description: A short workshop that explains how to compute PCA from basics, and the different implementations of PCA in R
+Suggests: BiocStyle, knitr, rmarkdown, ggplot2, ggfortify,factoextra
+LazyData: true
+License: MIT + file LICENSE
+RoxygenNote: 6.1.1
+VignetteBuilder:
+    knitr,
+    rmarkdown

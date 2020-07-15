@@ -1,0 +1,69 @@
+---
+title: "Short PCA Vignette- Wine Example"
+author: "Aedin"
+date: "May 1, 2020"
+output:
+  rmarkdown::html_document:
+    highlight: pygments
+    toc: true
+    toc_depth: 3
+    fig_width: 5
+vignette: >
+  %\VignetteIndexEntry{bordeaux}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding[utf8]{inputenc}
+---
+
+#Wine Example
+
+```{r}
+library(ade4)
+library(dplyr)
+library(ggplot2)
+library(ggpomological)
+data(bordeaux)
+```
+
+```{r}
+
+score(dudi.coa(bordeaux, scan = FALSE))
+score(dudi.pca(bordeaux, scan = FALSE))
+```
+
+```{r}
+library(explor)
+explor(dudi.pca(bordeaux, scan = FALSE))
+```
+
+```{r}
+bordeauxS= scale(bordeaux,center = TRUE, scale = TRUE)
+s= svd(bordeauxS)
+s$u %*% diag(s$d) %*% t(s$v) #  X = U D V'
+```
+
+
+
+```{r}
+#devtools::install_github("Financial-Times/ftplottools")
+#library(ftplottools)
+#devtools::install_github("gadenbuie/ggpomological")
+
+data(bordeaux)
+df<-bordeaux %>%
+  tibble::rownames_to_column(var="Wine") %>%
+  reshape2::melt(.,variable.name="Judge_Score",
+                 value.name="Number")
+
+p<- ggplot(df,
+           aes(Judge_Score, Number, fill=Judge_Score))+
+    geom_bar(color="black",stat = "identity") +
+    facet_wrap(~Wine, nrow = 2)+
+    scale_fill_pomological()+
+    theme_pomological("Homemade Apple", 12)+
+    theme(axis.text.x=element_blank(),
+          legend.position = "bottom",
+          legend.key = element_rect(colour = "black"))
+
+ paint_pomological(p,res = 110) %>%
+   magick::image_write("barplot-painted.png")
+```
