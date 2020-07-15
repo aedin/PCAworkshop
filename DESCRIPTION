@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Aedin Culhane
 Maintainer: Aedin Culhane <aedin@ds.dfci.harvard.edu>
 Description: A short workshop that explains how to compute PCA from basics, and the different implementations of PCA in R
-Suggests: BiocStyle, knitr, rmarkdown, ggplot2, ggfortify,factoextra
+Suggests: BiocStyle, knitr, rmarkdown, ggplot2, ggfortify,factoextra, FactoMineR, ade4, irlba
 LazyData: true
 License: MIT + file LICENSE
 RoxygenNote: 6.1.1
