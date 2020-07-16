@@ -23,7 +23,11 @@ Suggests:
     factoextra, 
     FactoMineR, 
     ade4, 
-    irlba
+    irlba,
+    BiocStyle,
+    ggpomological
+Remotes:
+    gadenbuie/ggpomological
 URL: https://aedin.github.io/PCAworkshop/
 VignetteBuilder:
     knitr,
