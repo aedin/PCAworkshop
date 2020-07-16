@@ -26,10 +26,12 @@ Suggests:
     FactoMineR, 
     ade4, 
     irlba,
+    BiocStyle,
+    ggpomological
+Remotes:
     explor,
     dplyr,
-    magrittr
-Remotes:    
+    magrittr,
     gadenbuie/ggpomological
 URL: https://aedin.github.io/PCAworkshop/
 BugReports: https://github.com/aedin/PCAworkshop/issues/new/choose
