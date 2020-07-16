@@ -6,6 +6,8 @@ Author@R:  person(given = "Aedin",
            role = c("aut", "cre"),
            email = "aedin@ds.dfci.harvard.edu",
            comment = c(ORCID = "your-orc-id-here"))
+Author: Aedin Culhane <aedin@ds.dfci.harvard.edu>
+Maintainer:  Aedin Culhane <aedin@ds.dfci.harvard.edu>         
 Description: A short workshop that explains how to compute PCA from basics, and the different implementations of PCA in R
 License: MIT + file LICENSE
 Encoding: UTF-8
