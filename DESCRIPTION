@@ -28,8 +28,7 @@ Suggests:
     irlba,
     explor,
     dplyr,
-    magrittr,
-    explor
+    magrittr
 Remotes:    
     gadenbuie/ggpomological
 URL: https://aedin.github.io/PCAworkshop/
