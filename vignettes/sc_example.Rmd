@@ -68,13 +68,15 @@ Perform PCA on
 ```
 
 
-## Brief introduction: correspondence analysis
+## Brief introduction to correspondence analysis
 
 PCA is the oldest dimension reduction method. Nonetheless, it is still in widespread use today.
 
 
 
-There are numerous methods related to PCA; one such method is **correspondence analysis**, which is similar to . 
+There are numerous methods related to PCA; one such method is **correspondence analysis (CA)**, which is similar to PCA. 
+
+Instead of a centering or z-score transformation as in PCA, CA applies a $\chi^2$ transformation prior to performing SVD.
 
 Correspondence analysis is implemented in various other R packages, including:
 
@@ -84,4 +86,3 @@ Correspondence analysis is implemented in various other R packages, including:
 - `FactoMineR`::`CA()`
 - `MASS`::`corresp()`
 
-We recently wrote a version
