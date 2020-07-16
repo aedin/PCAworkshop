@@ -20,18 +20,19 @@ Suggests:
     knitr,
     rmarkdown,
     pkgdown,
+    BiocStyle
+Imports:
     ggplot2, 
     ggfortify,
     factoextra, 
     FactoMineR, 
     ade4, 
     irlba,
-    BiocStyle,
-    ggpomological
-Remotes:
     explor,
     dplyr,
     magrittr,
+    ggpomological
+Remotes:
     gadenbuie/ggpomological
 URL: https://aedin.github.io/PCAworkshop/
 BugReports: https://github.com/aedin/PCAworkshop/issues/new/choose
