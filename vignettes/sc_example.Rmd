@@ -1,0 +1,87 @@
+---
+title: 'PCA example: Single cell count data'
+author: "Lauren Hsu"
+date: "7/16/2020"
+output:
+  rmarkdown::html_document:
+    highlight: pygments
+    toc: true
+    toc_depth: 3
+    fig_width: 5
+vignette: >
+  %\VignetteIndexEntry{PCA example: Single cell count data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding[utf8]{inputenc}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+In this example, we will 
+
+
+## PCA
+
+```{r}
+
+```
+
+### *Interactive exercise 1*
+
+Write 
+
+```{r}
+# your code here
+```
+
+## Visualizing PCA
+
+
+
+```{r}
+
+```
+
+
+
+## Speeding up PCA
+
+This dataset is small compared to many that we encounter in biology. 
+
+```{r}
+
+```
+
+As we saw above, we can achieve the same results as a `prcomp` call by using the `scale` and `svd` function.
+
+Similarly, 
+
+### *Interactive exercise 2*
+
+Perform PCA on 
+
+```{r}
+# time comparison prcomp, scale+svd, scale+irlba
+```
+
+
+## Brief introduction: correspondence analysis
+
+PCA is the oldest dimension reduction method. Nonetheless, it is still in widespread use today.
+
+
+
+There are numerous methods related to PCA; one such method is **correspondence analysis**, which is similar to . 
+
+Correspondence analysis is implemented in various other R packages, including:
+
+- `ade4`::`dudi.coa()`
+- `made4`::`ord(type = 'coa')`
+- `vegan`::`cca()` *(not to be confused with canonical correlation analysis, also abbreviated CCA)*
+- `FactoMineR`::`CA()`
+- `MASS`::`corresp()`
+
+We recently wrote a version
