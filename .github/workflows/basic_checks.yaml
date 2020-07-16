@@ -32,6 +32,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          options(repos = c(CRAN = "https://cran.r-project.org"))
           local_deps <- remotes::local_package_deps(dependencies = TRUE)
           deps <- remotes::dev_package_deps(dependencies = TRUE, repos = BiocManager::repositories())
           BiocManager::install(local_deps[local_deps %in% deps$package[deps$diff != 0]])
