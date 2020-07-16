@@ -27,10 +27,11 @@ Suggests:
     ade4, 
     irlba,
     explor,
-    dplyr
+    dplyr,
+    magrittr,
+    explor
 Remotes:    
-    gadenbuie/ggpomological,
-    juba/explor
+    gadenbuie/ggpomological
 URL: https://aedin.github.io/PCAworkshop/
 BugReports: https://github.com/aedin/PCAworkshop/issues/new/choose
 DockerImage: aculhane/pcabiocworkshop2020:latest
