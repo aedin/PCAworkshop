@@ -31,7 +31,10 @@ Imports:
     explor,
     dplyr,
     magrittr,
-    ggpomological
+    ggpomological,
+    magick,
+    reshape2,
+    tibble
 Remotes:
     gadenbuie/ggpomological
 URL: https://aedin.github.io/PCAworkshop/
