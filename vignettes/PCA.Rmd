@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r style, echo = FALSE, results = 'asis'}
-BiocStyle::markdown()
+library(magrittr)
 ```
 
 # PCA in R
@@ -218,14 +218,23 @@ eigenValues
 
 Summary of eigs
 ```{r}
-sf=2
-eigSum.svd= data.frame(rbind(
-  D=signif(s$d,sf),
-  eigenValues= signif(s$d^2/(nrow(s$u) - 1),sf),
-  SD = signif(sqrt(eigenValues),sf),
-  Proportion = paste0(signif((eigenValues/sum(eigenValues)),2)*100,"%"),
-  Cumulative = paste0(cumsum(signif((eigenValues/sum(eigenValues)),2))*100,"%")))
+eigSummary<-function(svdRes,sf=4){
+  if(is(svdRes,"prcomp")){
+    eigenvalue=svdRes$sdev^2
+  }else{
+  #d=signif(svdRes$d,sf)
+  eigenvalue= svdRes$d^2/(nrow(svdRes$u) - 1)
+}
+  data.frame(cbind(
+  eigenvalues=signif(eigenvalue,sf),
+  sd = signif(sqrt(eigenvalue),sf),
+  variance.percent = paste0(signif((eigenvalue/sum(eigenvalue)),2)*100,"%"),
+  cumulative.variance.percent = paste0(cumsum(signif((eigenvalue/sum(eigenvalue)),2))*100,"%")))
+}
 
+
+eigSum.svd <-eigSummary(p0)
+eigSum.svd 
 ```
 
 
@@ -273,12 +282,13 @@ summary(p1)
 
 To calculated eigenvalues information manually here is the code;
 ```{r}
+sf=4
 eigs= p1$sdev^2
-eigSum.pca= rbind(
-  eigs=eigs,
-  SD = sqrt(eigs),
-  Proportion = eigs/sum(eigs),
-  Cumulative = cumsum(eigs)/sum(eigs))
+eigSum.pca= cbind(
+  eigenvalue=eigs,
+  sd = sqrt(eigs),
+  variance.percent = eigs/sum(eigs),
+  cumulative.variance.percent = cumsum(eigs)/sum(eigs))
 
 eigSum.pca
 ```
@@ -447,8 +457,8 @@ names(res) = c('svd_scaledData','prcomp', 'princomp','princomp_cov', 'FactoMineR
 e<-sapply(res[-1],get_eig)
 
 # get_eig doesn't work on svd
-svd.e<- t(eigSum.svd[c(1,3,4),])
-svd.e[,2:3]<-svd.e[,2:3]*100  # Convert to %
+svd.e<- eigSum.svd[c(1,3,4)]
+
 colnames(svd.e)<- names(e[[1]])
 
 
@@ -481,10 +491,10 @@ Principal Component Analysis  | prcomp  | stats | Supplementary variables are ig
 
 
 ```{r}
-if(!"explor" %in% rownames(installed.packages()))    devtools::install_github("juba/explor")
+#if(!"explor" %in% rownames(installed.packages()))    #devtools::install_github("juba/explor")
 
-if(!"scatterD3" %in% rownames(installed.packages())) 
-devtools::install_github("juba/scatterD3")
+#if(!"scatterD3" %in% rownames(installed.packages())) 
+#devtools::install_github("juba/scatterD3")
 
 ```
 
