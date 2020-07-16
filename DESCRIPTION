@@ -1,5 +1,5 @@
 Package: PCAworkshop
-Title: A introduction to principal component analysis 
+Title: An introduction to matrix factorization and principal component analysis in R
 Version: 0.1.0
 Author@R:  person(given = "Aedin",
            family = "Culhane",
@@ -31,7 +31,6 @@ Imports:
     explor,
     dplyr,
     magrittr,
-    ggpomological,
     magick,
     reshape2,
     tibble
