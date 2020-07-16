@@ -1,4 +1,5 @@
-url: https://seandavi.github.io/sars2pack
+title: "PCAworkshop"
+url: https://aedin.github.io/PCAworkshop/
 
 template:
   params:
@@ -6,11 +7,17 @@ template:
     ganalytics: UA-93043521-1
 
 home:
-  title: "BuildABiocWorkshop2020"
+  title: “PCA Workshop”
   type: inverse
 
 
 navbar:
+  title: ~
+  type: default
+  left:
+    - text: Workshop
+      href: articles/PCA.html
+
   right:
-   - icon: fa-github
-     href: https://github.com/seandavi/BuildABiocWorkshop2020
+    - icon: fa-github
+      href: https://github.com/aedin/PCAworkshop
