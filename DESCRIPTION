@@ -27,11 +27,11 @@ Suggests:
     ade4, 
     irlba,
     BiocStyle,
-    ggpomological
-Remotes:
+    ggpomological,
     explor,
     dplyr,
-    magrittr,
+    magrittr
+Remotes:
     gadenbuie/ggpomological
 URL: https://aedin.github.io/PCAworkshop/
 BugReports: https://github.com/aedin/PCAworkshop/issues/new/choose
