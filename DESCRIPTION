@@ -27,6 +27,6 @@ Suggests:
     ade4, 
     irlba
 URL: https://aedin.github.io/PCAworkshop/
-VignetteBuilder:
-    knitr,
-    rmarkdown
+BugReports: https://github.com/aedin/PCAworkshop/issues/new/choose
+DockerImage: aculhane/pcabiocworkshop2020:latest
+VignetteBuilder: knitr
