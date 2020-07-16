@@ -1,14 +1,30 @@
 Package: PCAworkshop
-Type: Package
-Title: A introduction to PCA in R
+Title: A introduction to principal component analysis 
 Version: 0.1.0
-Author: Aedin Culhane
-Maintainer: Aedin Culhane <aedin@ds.dfci.harvard.edu>
+Author@R:  person(given = "Aedin",
+           family = "Culhane",
+           role = c("aut", "cre"),
+           email = "aedin@ds.dfci.harvard.edu",
+           comment = c(ORCID = "your-orc-id-here"))
 Description: A short workshop that explains how to compute PCA from basics, and the different implementations of PCA in R
-Suggests: BiocStyle, knitr, rmarkdown, ggplot2, ggfortify,factoextra, FactoMineR, ade4, irlba
-LazyData: true
 License: MIT + file LICENSE
-RoxygenNote: 6.1.1
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
+Depends: 
+    Biobase
+Suggests: 
+    knitr,
+    rmarkdown,
+    pkgdown,
+    ggplot2, 
+    ggfortify,
+    factoextra, 
+    FactoMineR, 
+    ade4, 
+    irlba
+URL: https://aedin.github.io/PCAworkshop/
 VignetteBuilder:
     knitr,
     rmarkdown
