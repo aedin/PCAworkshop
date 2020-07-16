@@ -19,7 +19,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r style, echo = FALSE, results = 'asis'}
-library(BiocStyle)
 library(magrittr)
 ```
 
@@ -492,10 +491,10 @@ Principal Component Analysis  | prcomp  | stats | Supplementary variables are ig
 
 
 ```{r}
-if(!"explor" %in% rownames(installed.packages()))    devtools::install_github("juba/explor")
+#if(!"explor" %in% rownames(installed.packages()))    #devtools::install_github("juba/explor")
 
-if(!"scatterD3" %in% rownames(installed.packages())) 
-devtools::install_github("juba/scatterD3")
+#if(!"scatterD3" %in% rownames(installed.packages())) 
+#devtools::install_github("juba/scatterD3")
 
 ```
 

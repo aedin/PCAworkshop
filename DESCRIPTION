@@ -25,7 +25,12 @@ Suggests:
     factoextra, 
     FactoMineR, 
     ade4, 
-    irlba
+    irlba,
+    explor,
+    dplyr
+Remotes:    
+    gadenbuie/ggpomological,
+    juba/explor
 URL: https://aedin.github.io/PCAworkshop/
 BugReports: https://github.com/aedin/PCAworkshop/issues/new/choose
 DockerImage: aculhane/pcabiocworkshop2020:latest
