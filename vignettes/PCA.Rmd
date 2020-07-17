@@ -1,7 +1,7 @@
 ---
-title: "Short PCA Vignette"
-author: "Aedin"
-date: "May 1, 2020"
+title: "Running Principal Component Analysus in R"
+author: "Aedin Culhane"
+date: "July 15, 2020"
 output:
   rmarkdown::html_document:
     highlight: pygments
@@ -14,16 +14,27 @@ vignette: >
   %\VignetteEncoding[utf8]{inputenc}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+# Set up the environment
+opts_chunk$set(cache.path='cache/', fig.path='fig/', cache=FALSE, tidy=FALSE, fig.keep='high', echo=TRUE, dpi=100, warnings=FALSE, message=FALSE, comment=NA, warning=FALSE, results='as.is', fig.width = 10, fig.height = 6) 
 ```
 
-```{r style, echo = FALSE, results = 'asis'}
+### Necessary R libraries
+
+```{r libraries}
+# Install, if necessary, and load necessary libraries and set up R session
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 library(magrittr)
+library(ade4)
+library(FactoMineR)
+library(factoextra)
+library(ggplot2)
 ```
 
 # PCA in R
-In R, there are several functions from different packages that allow us to perform PCA. These include;
+In R, there are several functions in many different packages that allow us to perform PCA. We will not review all of these, however will provide examples of the following;
 
 * svd() (stats)  *** on centered data** 
 * prcomp() (stats)
@@ -34,8 +45,6 @@ In R, there are several functions from different packages that allow us to perfo
 **Note, although prcomp sets scale=FALSE for consistency with S, in general scaling is advised. We will demonstrate first pca of unscaled and then scaled data. Scaling scaled the variables to have unit variance and is advised before  analysis takes place.** 
 
 We will demonstrate some of these and explore these using exploR
-
-
 
 
 # Equivalents across methods
@@ -53,7 +62,7 @@ Give an input matrix P and result res
 With ade4::dudi.pca and prcomp the default is center = TRUE, scale = TRUE.But  with princomp, cor=FALSE by default. 
 
 
-#  Toy data
+#  Create a simple toy dataset
 Create a cloud of points; two vectors, x,y of length 100. 
 
 ```{r}
@@ -64,20 +73,25 @@ Create a cloud of points; two vectors, x,y of length 100.
  y <- 30 + 2 * x         #sets y to be a vector that is a linear function of x
  x_obs <- x + ex         #adds "noise" to x
  y_obs <- y + ey         #adds "noise" to y
- par(mfrow=c(1,2))
- hist(x_obs)
- hist(y_obs)
-```
  
-Save  both vectors in a matrix of toy data called P
-```{r}
-P <- cbind(x_obs,y_obs) #places points in matrix
+# Bind both vectors in a matrix of toy data called P
+P <- data.frame(x_obs=x_obs,y_obs=y_obs) #places points in matrix
 summary(P)
 ```
 
-Plot x,y. Show center (mean (x), mean(y)) on plot
-```{r}                                                                                                    
-plot(P,asp=1,col=1) #plot points
+Basic histogram of the two distrubition
+
+```{r}
+ par(mfrow=c(1,2))
+ hist(P$x_obs)
+ hist(P$y_obs)
+```
+ 
+
+
+Plot x,y. Show a "orange" point of the center (mean (x), mean(y)) on plot
+
+```{r}                                                                          plot(P,asp=1,col=1) #plot points
 points(x=mean(x_obs),y=mean(y_obs),col="orange", pch=19) #show center
 ```
  

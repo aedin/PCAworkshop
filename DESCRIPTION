@@ -33,7 +33,10 @@ Imports:
     magrittr,
     magick,
     reshape2,
-    tibble
+    tibble,
+    irlba,
+    corral,
+    glmpca
 Remotes:
     gadenbuie/ggpomological
 URL: https://aedin.github.io/PCAworkshop/
