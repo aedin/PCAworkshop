@@ -123,7 +123,7 @@ knitr::include_graphics("./image/coa.png")
 
 A much more detailed explanation of correspondence analysis is provided at https://www.displayr.com/math-correspondence-analysis/
 
-## expected matrix
+## Expected matrix
 
 The input matrix must be positive count data.
 
