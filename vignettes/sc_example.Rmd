@@ -10,7 +10,7 @@ output:
     fig_width: 5
 bibliography: ref.bib
 vignette: >
-  %\VignetteIndexEntry{PCA example: scRNAseq}
+  %\VignetteIndexEntry{Example: scRNAseq}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding[utf8]{inputenc}
 ---
