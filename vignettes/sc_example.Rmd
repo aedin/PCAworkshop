@@ -29,6 +29,7 @@ In this example, we will use the `Zhengmix4eq` benchmarking dataset from the [`D
 library(SingleCellExperiment)
 library(corral)
 library(ggplot2)
+library(uwot)
 
 library(DuoClustering2018)
 zm4eq.sce <- sce_full_Zhengmix4eq()
@@ -114,7 +115,9 @@ plot_embedding(logcounts_prc$rotation,
                saveplot = F)
 ```
 
-These examples illustrate the importance of performing pre-processing -- when PCA is performed on raw counts, we see an arch effect. In contrast, when performed on log-transformed counts, there is no arch effect. See our recent [mini-review article](https://www.frontiersin.org/articles/10.3389/fonc.2020.00973/full) in *Frontiers in Oncology* for further discussion of data pre-processing and transformations [@frontiers].
+These examples illustrate the importance of performing pre-processing -- when PCA is performed on raw counts, we see an arch effect. In contrast, when performed on log-transformed* counts, there is no arch effect. See our recent [mini-review article](https://www.frontiersin.org/articles/10.3389/fonc.2020.00973/full) in *Frontiers in Oncology* for further discussion of data pre-processing and transformations [@frontiers].
+
+\* *Note: while the log-transformation does improve the results with PCA here, recent papers examine the theoretical basis for this transformation and question whether it is appropriate for scRNAseq data, such as Townes et al. 2019 and Hafemeister & Satija 2019. Nonetheless, log(x+1) remains a popular pre-processing choice.*
 
 ### *Interactive example 1*
 
@@ -122,19 +125,21 @@ On the count data, the first two PCs contain a strong arch effect. On both plots
 
 ```{r}
 plot_embedding(counts_prc$rotation, 
-               xpc = 1, 
+               xpc = 1, # CHANGE ME
                plot_title = 'PCA on counts', 
                color_vec = zm4eq.sce$phenoid, 
                color_title = 'Cell type', 
                saveplot = F)
 
 plot_embedding(logcounts_prc$rotation, 
-               xpc = 1,
+               xpc = 1, # CHANGE ME
                plot_title = 'PCA on logcounts', 
                color_vec = zm4eq.sce$phenoid, 
                color_title = 'Cell type', 
                saveplot = F)
 ```
+
+### *Interactive example 2*
 
 Perform the equivalent PCA without using `prcomp`.
 
@@ -144,38 +149,79 @@ Perform the equivalent PCA without using `prcomp`.
 
 ## Visualizing embeddings
 
-While we can browse the PCs For purposes of visualization and other analyses like clustering, UMAP and tsne 
+While PCA enables us to find a much lower dimensional representation, even if we are interested in just using 10 PCs, that is still hard to visualize. Uniform Manifold Approximation and Projection (UMAP) is a popular and fast dimension method that can be used on embeddings to find a further reduced dimensional representation.
+
+We'll use UMAP (`uwot`::`umap`) to improve our visualization, incorporating the first 10 components of the PCA result as performed on the logcounts:
 
 ```{r}
-
+logcounts_prc_umap <- umap(logcounts_prc$rotation[,1:10], n_neighbors = 30)
+plot_embedding(logcounts_prc_umap, 
+               xpc = 1,
+               plot_title = 'UMAP (PCA on logcounts)', 
+               color_vec = zm4eq.sce$phenoid, 
+               color_title = 'Cell type', 
+               saveplot = F)
 ```
 
+We can see that the cells cluster clearly by cell type.
 
+What else could we have changed here? 
+
+- *Experiment with what happens if you use more or fewer PCs.* 
+- *Change the* `n_neighbors` *argument in the* `umap` *call and see how it changes your embedding. This parameter modulates whether more local or global structure will be preserved.*
+- *What does UMAP on the counts reduction look like? What happens if you drop the first PC (which has the strong arch effect)?*
 
 ## Speeding up PCA
 
-This dataset is small compared to many that we encounter in biology. 
+This dataset is small compared to many that we encounter in biology. We are often interested in analyzing far more than 4,000 cells at one time. Further, we may want to incorporate more features. However, even on this small dataset, it takes a long time to run `prcomp` on the full dataset without any feature selection. 
+
+**How can we speed this up?**
+
+The `prcomp` function uses an `svd` call, which will compute **all** of the components (which, in this case, would be 500). However, the point of doing PCA is that we are only going to use a few, say 10 (almost certainly not more than 50), components. `irlba::irlba` also performs singular value decomposition, but uses a fast approximation.
 
 ```{r}
-
+set.seed(2020)
+mat <- matrix(sample(1:10,100000, replace = T), nrow = 1000)
+system.time(svd_mat <- svd(mat))
+system.time(irl_mat <- irlba::irlba(mat, nv = 10))
 ```
 
-As we saw above, we can achieve the same results as a `prcomp` call by using the `scale` and `svd` function.
+Since this demonstration matrix is small, both `irlba` and `svd` are fast. However, we can observe that `svd` takes nearly twice as long as `irlba`. As datasets scale in size, this has a big impact, and the difference in speed grows.
 
-Similarly, 
+We can verify that `irlba` is giving us a good approximation of `svd`:
 
-### *Interactive example 2*
+Comparing singular values.. 
+```{r}
+svd_mat$d[1:10]
+irl_mat$d
+```
 
-Perform PCA on 
+Comparing cell embeddings (right singular values; v matrix)
+[Note, that depending on the seed, the sign of the `irlba` output may flip sign. This generally doesn't matter for downstream analysis, unless integrating datasets.]
+```{r}
+svd_mat$v[1:5, 1:5]
+irl_mat$v[1:5, 1:5]
+```
+
+
+### *Interactive example 3*
+
+As we saw above, we can achieve the same results as a `prcomp` call by using the `scale` and `svd` function. Similarly, we can substitute `irlba` for svd. 
+
+Run PCA as in `prcomp` using `irlba`. Compare the runtime with the `prcomp` and `scale` + `svd` approaches above.
 
 ```{r}
-# time comparison prcomp, scale+svd, scale+irlba
+# as in the above examples, you can use system.time() to check runtime
+# if your command is longer than 1 line, you can encase them within {},
+# then put it inside the system.time() call
+# e.g., system.time({set of commands
+#                    that take more than 1 line})
 ```
 
 
 ## Brief introduction to correspondence analysis
 
-PCA is the oldest dimension reduction method, and while it is popular, it is only one of many possible methods; there are numerous methods related to PCA. One such method is **correspondence analysis (CA)**, which is similar to PCA.
+PCA is the oldest dimension reduction method, and while it is arguably the most popular, it is only one of many possible methods; there are numerous methods related to and adapted from PCA. One such method is **correspondence analysis (CA)**.
 
 Instead of a centering or z-score transformation as in PCA, CA applies a $\chi^2$ transformation prior to performing SVD, and is appropriate for use with count data. It is popular in other fields, such as ecology, business research, and archaeology, for finding associations between rows and columns.
 
@@ -186,22 +232,81 @@ Correspondence analysis is implemented in various R packages, including:
 - `vegan`::`cca()` *(not to be confused with canonical correlation analysis, also abbreviated CCA)*
 - `FactoMineR`::`CA()`
 
-However, these implementations are not designed for very large data, and thus are unwieldy for single-cell analysis. To enable the fast (and easy) application of CA to such datasets, we developed the `corral` package.
+However, these implementations are not designed for very large data, and thus are unwieldy for single-cell analysis. To enable the fast (and easy) application of CA to such datasets, we developed the `corral` package (which we've been using to plot embeddings, up til this point!).
 
-[![](corral_sticker.png){ width=10% }](https://www.bioconductor.org/packages/devel/bioc/html/corral.html)
+[![](image/corral_sticker.png){ width=10% }](https://www.bioconductor.org/packages/devel/bioc/html/corral.html)
 
 `corral`::`corral` performs correspondence analysis:
 
 ```{r}
-
+corral_time <- system.time(corral_counts <- corral(counts_mat))
+corral_logcounts <- corral(logcounts_mat)
+corral_logcounts
 ```
 
-### *Interactive example 3*
+We used the `irlba` fast SVD approximation, so `corral` runs in a fraction of the time that `prcomp` takes:
 
-Load another scRNAseq benchmarking dataset from the `DuoClustering2018` package and compare the results from using different dimension reduction methods.
+`prcomp` runtime:
+```{r}
+prc_time
+```
+
+`corral` runtime:
+```{r}
+corral_time
+```
+
+Again, we can visualize the direct output from `corral`: 
 
 ```{r}
+plot_embedding(corral_counts$v, 
+               xpc = 1, 
+               plot_title = 'corral on counts', 
+               color_vec = zm4eq.sce$phenoid, 
+               color_title = 'Cell type', 
+               saveplot = F)
 
+plot_embedding(corral_logcounts$v, 
+               xpc = 1,
+               plot_title = 'corral on logcounts', 
+               color_vec = zm4eq.sce$phenoid, 
+               color_title = 'Cell type', 
+               saveplot = F)
+```
+
+In contrast to the results from PCA, we can see that there is no arch effect in the first two PCs on the count data.
+
+We can also compute and visualize the UMAP embeddings:
+
+```{r}
+corral_counts_umap <- umap(corral_counts$v, n_neighbors = 30)
+corral_logcounts_umap <- umap(corral_logcounts$v, n_neighbors = 30)
+
+plot_embedding(corral_counts_umap, 
+               xpc = 1, 
+               plot_title = 'corral on counts', 
+               color_vec = zm4eq.sce$phenoid, 
+               color_title = 'Cell type', 
+               saveplot = F)
+
+plot_embedding(corral_logcounts_umap, 
+               xpc = 1,
+               plot_title = 'corral on logcounts', 
+               color_vec = zm4eq.sce$phenoid, 
+               color_title = 'Cell type', 
+               saveplot = F)
+```
+
+
+### *Interactive example 4*
+
+Load another scRNAseq benchmarking dataset from the `DuoClustering2018` package and compare the results from using different dimension reduction methods. 
+
+We load and pull out the logcounts matrix from set up the `Zhengmix4uneq` dataset, which is similar to the one we used above except that the cells are in unbalanced groups. Instead of loading the full count matrix as we did above, we took the pre-filtered matrix (already selected the HVGs). Feel free to select a different one; find the list of options in the documentation for the `DuoClustering2018` package.
+
+```{r, message = F}
+zm4uneq <- sce_filteredExpr10_Zhengmix4uneq()
+zm4uneq_logcounts <- assay(zm4uneq, 'logcounts')
 ```
 
 
