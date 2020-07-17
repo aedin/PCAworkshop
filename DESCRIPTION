@@ -22,7 +22,8 @@ Suggests:
     knitr,
     rmarkdown,
     pkgdown,
-    BiocStyle
+    BiocStyle,
+    magick
 Imports:
     DuoClustering2018,
     ggplot2, 
@@ -34,7 +35,6 @@ Imports:
     explor,
     dplyr,
     magrittr,
-    magick,
     reshape2,
     tibble,
     irlba,
