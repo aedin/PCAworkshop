@@ -11,15 +11,7 @@ home:
 
 
 navbar:
-  left:
-    - text: Intro
-      href: articles/Intro.html
-    - text: PCA
-      href: articles/PCA.html
-    - text: COA
-      href: articles/COA.html
-    - text: Example: scRNAseq
-      href: articles/sc_example.html
   right:
     - icon: fa-github
       href: https://github.com/aedin/PCAworkshop
+
