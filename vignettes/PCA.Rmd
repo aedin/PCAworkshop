@@ -36,13 +36,13 @@ library(ggplot2)
 # PCA in R
 In R, there are several functions in many different packages that allow us to perform PCA. We will not review all of these, however will provide examples of the following;
 
-* svd() (stats)  ** on centered data** 
-* prcomp() (stats)
-* princomp() (stats)  ** on cor matrix **
-* PCA() (FactoMineR)
-* dudi.pca() (ade4)
+* `svd()` (`stats`)  ** on centered data** 
+* `prcomp()` (`stats`)
+* `princomp()` (`stats`)  ** on cor matrix **
+* `PCA()` (`FactoMineR`)
+* `dudi.pca()` (`ade4`)
 
-**Note, although prcomp sets scale=FALSE for consistency with S, in general scaling is advised. We will demonstrate first pca of unscaled and then scaled data. Scaling scaled the variables to have unit variance and is advised before  analysis takes place.** 
+**Note, although `prcomp` sets `scale=FALSE` for consistency with S, in general scaling is advised. We will demonstrate first pca of unscaled and then scaled data. Scaling scaled the variables to have unit variance and is advised before  analysis takes place.** 
 
 We will demonstrate some of these and explore these using exploR
 
@@ -53,13 +53,15 @@ Give an input matrix P and result res
 
 |Function | loadings | scores | plot|
 | :------------- |:-------------| :-----| :-----|
-|prcomp(P, center=TRUE, scale=TRUE) | res\$rotation |res\$x | biplot(res)|
-|princomp(P, cor=TRUE) | res$loadings | res\$scores | biplot(res)|
-|PCA(P) | res\$svd\$V | res\$ind\$coord | plot(res)|
-|dudi.pca(P, center=TRUE, scale=TRUE) | res\$c1 | res\$li | scatter(res)|
+|`prcomp(P, center=TRUE, scale=TRUE`) | `res$rotation` |`res$x` | `biplot(res)`|
+|`princomp(P, cor=TRUE)` | `res$loadings` | `res$scores` | `biplot(res)`|
+|`PCA(P)` | `res$svd$V` | `res$ind$coord` | `plot(res)`|
+|`dudi.pca(P, center=TRUE, scale=TRUE)` | `res$c1` | `res$li` | `scatter(res)`|
 
 
-With ade4::dudi.pca and prcomp the default is `center = TRUE, scale = TRUE`. But with princomp, `cor=FALSE` is the default.
+With `ade4::dudi.pca` and `prcomp` the default is `center = TRUE, scale = TRUE`. 
+
+With `princomp`, `cor=FALSE` is the default.
 
 #  Create a simple toy dataset
 Create a cloud of points; two vectors, x,y of length 100. 
@@ -87,7 +89,7 @@ Basic histogram of the two distributions:
 ```
  
 
-Plot x,y. Show a "orange" point of the center (mean (x), mean(y)) on plot
+Plot x,y. Place an "orange" point at the center (`mean(x)`, `mean(y)`) on plot
 
 ```{r}                                                                          
 plot(P,asp=1,col=1) #plot points
@@ -126,12 +128,12 @@ eigenvalues <- eigen(MCov)$values
 eigenvalues
 ```
 
-(This is the same as prcomp PCA of the unscaled data)
+(This is the same as `prcomp` PCA of the unscaled data)
 ```{r}
 prcomp(P)$sdev^2 
 ```
 
-and similar to princomp
+and similar to `princomp`
 
 ```{r}
 princomp(P)$sdev^2   
@@ -171,7 +173,7 @@ shows the second principal axis, which is orthogonal to the first (recall that t
 
 ## PCA (scaled data) using Singular value decomposition  (svd)
 
-Given a matrix X of dimension n×p, SVD decomposes it to:
+Given a matrix X of dimension n × p, SVD decomposes it to:
 
 $$M = U D V^{t}$$
 
@@ -188,20 +190,20 @@ d	- a vector containing the singular values
 u	- the left singular vectors 
 v	- the right singular vectors of x
 
-Relating to prcomp;
+Relating to `prcomp`;
 
 The columns u from the SVD correspond to the principal components x in the PCA. 
 
 Furthermore, the matrix v from the SVD is equivalent to the rotation matrix returned by prcomp.
 
-Now repeat the code above but **scale** and center the data scale(P, center=TRUE, scale=TRUE).
+Now repeat the code above but **scale** and **center** the data with `scale(P, center=TRUE, scale=TRUE)`.
 
 ```{r}
 any(M == scale(P))  #FALSE
 all(scale(P, center=TRUE, scale=TRUE)== scale(P)) #TRUE
 ```
 
-### scale(P, center=TRUE, scale=TRUE)
+### `scale(P, center=TRUE, scale=TRUE)`
 ```{r}
 p0<-svd(scale(P))
 
@@ -220,7 +222,7 @@ Which is
 diag(t(p0$u) %*% M %*% p0$v)
 ```
 
-Eigenvalues from svd on the scaled data. The diagonal elements of d from the SVD are proportional to the standard deviations (sdev) returned by PCA. 
+Eigenvalues from svd on the scaled data. The diagonal elements of d from the SVD are proportional to the standard deviations (`sdev`) returned by PCA. 
 
 The elements of d are formed by taking the sum of the squares of the principal components but not dividing by the sample size.
 
@@ -276,7 +278,7 @@ scale(P)%>% head
 
 ## Comparing to prcomp
 
-First stats::prcomp.  The eigenvectors are stored in \$rotation. Note these are the same as svd$v on scale data 
+First `stats::prcomp`.  The eigenvectors are stored in `$rotation`. Note these are the same as `svd$v` on scale data 
 ```{r}
 p1<- prcomp(P, scale = TRUE)
 p1$rotation
@@ -286,8 +288,8 @@ p1$rotation
  (p1$rotation== p0$v)
 ```
 
-eigenvalues - sdev
-eigenvector  - rotation
+eigenvalues - `$sdev`
+eigenvector  - `$rotation`
 
 ```{r}
 names(p1)
@@ -328,8 +330,8 @@ plot(ProportionVariance, xlim = c(0, 5), type = "b", pch = 16, xlab = "principal
     ylab = "variance explained")
 ```
 
-# princomp
-princomp was written for compatiblity with S-PLUS however it is not recommended. Its is better to use prcomp or svd. That is because by default princomp performs a decompostion of the covariance not correlation matrix. Princomp can call eigen on the correlation or covariance matrix. Its  default calculation uses divisor N for the covariance matrix.
+# `princomp`
+`princomp` was written for compatiblity with S-PLUS however it is not recommended. Its is better to use prcomp or svd. That is because by default `princomp` performs a decompostion of the covariance not correlation matrix. `princomp` can call `eigen` on the correlation or covariance matrix. Its default calculation uses divisor N for the covariance matrix.
 
 ```{r}
 p2<-stats::princomp(P)
@@ -363,20 +365,20 @@ p2b$sdev^2
 p2b$loadings
 ```
 
-For more info on prcomp v princomp see
+For more info on `prcomp` v `princomp` see
 http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/118-principal-component-analysis-in-r-prcomp-vs-princomp/
 
 
-## FactoMineR
+## `FactoMineR`
 
-FactoMineR::PCA calls svd to compute the PCA
+`FactoMineR::PCA` calls svd to compute the PCA
 
 
 ```{r}
 p3<-FactoMineR::PCA(P)
 ```
 
-The eigenvalues, same as eigSum and eigSum.svd above
+The eigenvalues, same as `eigSum` and `eigSum.svd` above
 ```{r}
 t(p3$eig)
 ```
@@ -387,9 +389,9 @@ p3$var$coord
 ```
 
 
-## ADE4::dudi.pca
+## `ade4::dudi.pca`
 
-First ade4::dudi.pca scales the data and stores the scaled data in $tab. In PCA this will be almost equivalent to scale. However there is a minor difference (see https://pbil.univ-lyon1.fr/R/pdf/course2.pdf).  ade4 usees the duality diagram framework for computing pca and other matrix factorizations (so it provides lw and cw which are the row and columns weights). See Cruz and Holmes 2011 for a wonderful tutorial on the duality diagram framework https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3265363/
+First `ade4::dudi.pca` scales the data and stores the scaled data in `$tab`. In PCA this will be almost equivalent to scale. However there is a minor difference (see https://pbil.univ-lyon1.fr/R/pdf/course2.pdf).  `ade4` uses the duality diagram framework for computing pca and other matrix factorizations (so it provides `lw` and `cw` which are the row and columns weights, respectively). See Cruz and Holmes 2011 for a wonderful tutorial on the duality diagram framework https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3265363/
 
 
 
@@ -405,8 +407,8 @@ p4$cent == colMeans(P)
 sd.n <- function(x) sqrt(var(x) * (length(x) - 1)/length(x))
 identical(p4$norm,apply(P, 2, sd.n))
 ```
-The summary printout is equivalent to P3 (p3$eig) above. 
-The eigenvales are stored in p4$eig.
+The summary printout is equivalent to P3 (`p3$eig`) above. 
+The eigenvales are stored in `p4$eig`.
 
 ```{r}
 summary(p4)
@@ -495,7 +497,7 @@ e
 
 # Visualization and Exploration of results
 
-The github package [`explor`](https://github.com/juba/explor) is useful for exploring data. It includes plotting functions for many packages including ade4, FactoMineR and baseR functions prcomp and princomp;
+The github package [`explor`](https://github.com/juba/explor) is useful for exploring data. It includes plotting functions for many packages including `ade4`, `FactoMineR` and `base` R functions `prcomp` and `princomp`;
 
 For now on, it is usable the following types of analyses :
 
@@ -535,8 +537,8 @@ res.ca <- CA(children, row.sup = 15:18, col.sup = 6:8)
 explor(res.ca)
 ```
 
-## factoextra
-Plotting using factoextra
+## `factoextra`
+Plotting using `factoextra`
 
 ```{r}
 library(factoextra)
@@ -590,14 +592,14 @@ ggplot(ir.pca,aes(PC1, PC2))+
 
 
 
-stat_ellipse() and stat_density_2d() have a lot of options. See manual pages
+`stat_ellipse()` and `stat_density_2d()` have a lot of options. See manual pages
 
 multivariate normal distribution.
 ```{}
 stat_ellipse(type = "norm", linetype = 2)  
 ```
 
-Euclid, is a circle with radius = level
+Euclid, is a circle with radius equal to the `level` parameter
 ```{}
 stat_ellipse(type = "euclid", level = 3) 
 ```
