@@ -221,9 +221,9 @@ Run PCA as in `prcomp` using `irlba`. Compare the runtime with the `prcomp` and 
 
 ## Brief introduction to correspondence analysis
 
-PCA is the oldest dimension reduction method, and while it is arguably the most popular, it is only one of many possible methods; there are numerous methods related to and adapted from PCA. One such method is **correspondence analysis (CA)**.
+PCA is the oldest dimension reduction method, and while it is arguably the most popular, it is only one of many possible methods; there are numerous methods related to and adapted from PCA. One such method is **correspondence analysis (COA)**.
 
-Instead of a centering or z-score transformation as in PCA, CA applies a $\chi^2$ transformation prior to performing SVD, and is appropriate for use with count data. It is popular in other fields, such as ecology, business research, and archaeology, for finding associations between rows and columns.
+Instead of a centering or z-score transformation as in PCA, COA applies a $\chi^2$ transformation prior to performing SVD, and is appropriate for use with count data. It is popular in other fields, such as ecology, business research, and archaeology, for finding associations between rows and columns.
 
 Correspondence analysis is implemented in various R packages, including:
 
@@ -232,7 +232,7 @@ Correspondence analysis is implemented in various R packages, including:
 - `vegan`::`cca()` *(not to be confused with canonical correlation analysis, also abbreviated CCA)*
 - `FactoMineR`::`CA()`
 
-However, these implementations are not designed for very large data, and thus are unwieldy for single-cell analysis. To enable the fast (and easy) application of CA to such datasets, we developed the `corral` package (which we've been using to plot embeddings, up til this point!).
+However, these implementations are not designed for very large data, and thus are unwieldy for single-cell analysis. To enable the fast (and easy) application of COA to such datasets, we developed the `corral` package (which we've been using to plot embeddings, up til this point!).
 
 [![](image/corral_sticker.png){ width=10% }](https://www.bioconductor.org/packages/devel/bioc/html/corral.html)
 
