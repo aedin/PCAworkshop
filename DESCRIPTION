@@ -1,13 +1,15 @@
 Package: PCAworkshop
 Title: An introduction to matrix factorization and principal component analysis in R
 Version: 0.1.0
-Author@R:  person(given = "Aedin",
-           family = "Culhane",
-           role = c("aut", "cre"),
-           email = "aedin@ds.dfci.harvard.edu",
-           comment = c(ORCID = "0000-0002-1395-9734"))
-Author: Aedin Culhane <aedin@ds.dfci.harvard.edu>
-Maintainer:  Aedin Culhane <aedin@ds.dfci.harvard.edu>         
+Authors@R: 
+    c(person(given = "Aedin", family = "Culhane",
+             role = c("aut", "cre"),
+             email = "aedin@ds.dfci.harvard.edu",
+             comment = c(ORCID = "0000-0002-1395-9734")),
+    person(given = "Lauren", family = "Hsu",
+             role = c("aut"),
+             email = "lrnshoe@gmail.com",
+             comment = c(ORCID = "0000-0002-6035-7381")))
 Description: A short workshop that explains how to compute PCA from basics, and the different implementations of PCA in R
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -39,9 +41,9 @@ Imports:
     corral,
     glmpca,
     scatterD3,
-    ComplexHeatmap
-Remotes:
-    gadenbuie/ggpomological
+    ComplexHeatmap,
+    uwot,
+    SingleCellExperiment
 URL: https://aedin.github.io/PCAworkshop/
 BugReports: https://github.com/aedin/PCAworkshop/issues/new/choose
 DockerImage: aculhane/pcabiocworkshop2020:latest
