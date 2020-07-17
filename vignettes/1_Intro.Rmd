@@ -138,5 +138,8 @@ knitr::include_graphics("./image/pcaExplor.png")
 ```
 
 
+```{r}
+sessionInfo()
+```
 
 

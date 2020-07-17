@@ -309,6 +309,10 @@ zm4uneq <- sce_filteredExpr10_Zhengmix4uneq()
 zm4uneq_logcounts <- assay(zm4uneq, 'logcounts')
 ```
 
+```{r}
+sessionInfo()
+```
+
 
 ## References
 

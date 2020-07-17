@@ -609,6 +609,9 @@ multivariate t-distribution
 stat_ellipse(type = "t") 
 ```
 
+```{r}
+sessionInfo()
+```
 
 
 

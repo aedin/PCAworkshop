@@ -334,6 +334,9 @@ boxplot(factors1, ylab="factor PC1", xlab="iter", las=2, main="The First PC1 in 
 ComplexHeatmap::Heatmap(cor(factors1), name="Correlations in PC1 (20 iterations)")
 ```
 
+```{r}
+sessionInfo()
+```
 
 
 # References
