@@ -11,9 +11,10 @@ home:
 
 
 navbar:
-  left:
-    - text: Workshop
-      href: articles/PCA.html
   right:
     - icon: fa-github
       href: https://github.com/aedin/PCAworkshop
+      
+      
+      
+      
