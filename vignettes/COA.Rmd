@@ -24,8 +24,7 @@ opts_chunk$set(cache.path='cache/', fig.path='fig/', cache=FALSE, tidy=FALSE, fi
 
 ```{r libraries}
 # Install, if necessary, and load necessary libraries and set up R session
-if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
-library(BiocManager)
+#if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 library(ggplot2)
 library(ggfortify)
 library(corral)
