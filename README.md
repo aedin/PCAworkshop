@@ -1,12 +1,16 @@
-# Hitchhiker's Guide to PCA: <br/> Demystifying dimensionality reduction in R/Bioconductor
+# Hitchhiker's Guide to Matrix Factorization and PCA: Demystifying dimensionality reduction
 
-*Lauren Hsu, Aedin Culhane*
+
+# Instructor(s) name(s) and contact information
+
+* Aedin Culhane
+* Lauren Hsu
 
 
 ##  Description
-This workshop will provide a beginner's guide to principal component analysis (PCA), the difference between singular value decomposition, different forms of PCA and fast PCA for single-cell data. We will describe how to detect artifacts and select the optimal number of components. It will focus on SVD and PCA applied to single-cell data.
+This workshop will provide a beginner's guide to matrix factorization, principal component analysis (PCA), the difference between singular value decomposition, different forms of PCA and fast PCA for single-cell data. We will describe how to detect artifacts and select the optimal number of components. It will focus on SVD, PCA applied single-cell data.
 
-Principal component analysis (PCA) is a key step in many bioinformatics pipelines. In this interactive session we will take a deep dive into the various implementations of singular value decomposition (SVD) and principal component analysis (PCA) to clarify the relationship between these methods, and to demonstrate the equivalencies and contrasts between these methods. We will also discuss interpretation of outputs, as well as some common pitfalls and sources of confusion in utilizing these methods.
+Principal component analysis (PCA) is a key step in many bioinformatics pipelines. In this interactive session we will take a deep dive into the various implementations of singular value decomposition (SVD) and principal component analysis (PCA) to clarify the relationship between these methods, and to demonstrate the equivalencies and contrasts between these methods. We will describe correspondence analysis (COA) and demonstrate how it differs from PCA. We will also discuss interpretation of outputs, as well as some common pitfalls and sources of confusion in utilizing these methods.
  
 ### Pre-requisites
 A basic understanding of R syntax would be helpful, but not required. No prior knowledge of PCA necessary.
@@ -19,6 +23,7 @@ We invite audience members to engage with questions and examples from their own 
 - FactoMineR
 - ade4
 - irlba
+- corral
 - ggplot2
  
 ### Time outline
@@ -40,8 +45,10 @@ Upon completion of this workshop, we expect participants to have gained an under
  
 1. Describe the similarities and differences between the different implementations of PCA and SVD in R/Bioconductor
 2. Perform PCA/SVD on real data
-3. Creating plots to interpret PCA/SVD outputs, including diagnosis of problems like arch/horseshoe effect
+3. Apply COA on real data
+4. Creating plots to interpret PCA/SVD outputs, including diagnosis of problems like arch/horseshoe effect
 
 
- 
+## Installation
 
+You can install the released version of PCAworkshop from 
