@@ -1,11 +1,11 @@
 Package: PCAworkshop
-Title: A introduction to principal component analysis 
+Title: An introduction to matrix factorization and principal component analysis in R
 Version: 0.1.0
 Author@R:  person(given = "Aedin",
            family = "Culhane",
            role = c("aut", "cre"),
            email = "aedin@ds.dfci.harvard.edu",
-           comment = c(ORCID = "your-orc-id-here"))
+           comment = c(ORCID = "0000-0002-1395-9734"))
 Author: Aedin Culhane <aedin@ds.dfci.harvard.edu>
 Maintainer:  Aedin Culhane <aedin@ds.dfci.harvard.edu>         
 Description: A short workshop that explains how to compute PCA from basics, and the different implementations of PCA in R
@@ -32,7 +32,14 @@ Imports:
     explor,
     dplyr,
     magrittr,
-    ggpomological
+    magick,
+    reshape2,
+    tibble,
+    irlba,
+    corral,
+    glmpca,
+    scatterD3,
+    ComplexHeatmap
 Remotes:
     gadenbuie/ggpomological
 URL: https://aedin.github.io/PCAworkshop/

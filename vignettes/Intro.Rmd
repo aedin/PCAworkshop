@@ -1,0 +1,140 @@
+---
+title: "A short PCA vignette- Wine Example"
+author: "Aedin Culhane"
+date: "May 1, 2020"
+output:
+  rmarkdown::html_document:
+    highlight: pygments
+    toc: true
+    toc_depth: 3
+    fig_width: 5
+vignette: >
+  %\VignetteIndexEntry{Intro}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding[utf8]{inputenc}
+---
+
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
+library(knitr)
+# Set up the environment
+opts_chunk$set(cache.path='cache/', fig.path='fig/', cache=FALSE, tidy=FALSE, fig.keep='high', echo=TRUE, dpi=100, warnings=FALSE, message=FALSE, comment=NA, warning=FALSE, results='as.is', fig.width = 10, fig.height = 6) 
+```
+
+### Necessary R libraries
+
+```{r libraries}
+# Install, if necessary, and load necessary libraries and set up R session
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+library(dplyr)
+library(ggplot2)
+library(explor)
+library(ade4)
+library(tibble)
+library(reshape2)
+```
+
+# Introduction
+Principal component analysis (PCA) provides a method for visualizing the distinguishing patterns or information in a dataset.  Additional tutorials will provide a more in-depth review of the field, this is just a short simple "taster" vignette. 
+
+
+#  Dataset- Wine Example
+This is a very simple example, 200 judges performed a blind tasting of 5 red wines from Bordeaux, scoring them boring, mediocre, good or excellent. The dataset is available in the ade4 R package.
+
+The bordeaux dataset is in ade4
+```{r}
+data(bordeaux)
+```
+
+In French wines, table wine has fewer legal restriction and is cheaper, whereas Cru or Grand Cru wine have tight rules and are more expensive
+
+
+```{r bordeaux, echo=FALSE, fig.cap="A simple dataset example", out.width = '100%'}
+knitr::include_graphics("./image/Bordeaux1.png")
+```
+
+```{r}
+data(bordeaux)
+df<-bordeaux %>%
+  tibble::rownames_to_column(var="Wine") %>%
+  reshape2::melt(.,variable.name="Judge_Score",
+                 value.name="Number")
+
+```
+
+
+```{r}
+score(dudi.coa(bordeaux, scan = FALSE))
+score(dudi.pca(bordeaux, scan = FALSE))
+```
+
+
+
+## A tangent - Fun graphics with ggpomological
+Completely unrelated to PCA, but the ggpomological ggtheme is a fun one for displaying these wine data.  Pomology is a branch of botany that studies and cultivates fruit and [ggpomological](https://www.garrickadenbuie.com/project/ggpomological) is a ggtheme and palette that evokes the style and colors of old watercolor prints of pomology.
+
+
+```{r, eval=FALSE}
+#devtools::install_github("gadenbuie/ggpomological")
+#install.packages("magick")
+
+p<- ggplot(df,
+           aes(Judge_Score, Number, fill=Judge_Score))+
+    geom_bar(color="black",stat = "identity") +
+    facet_wrap(~Wine, nrow = 2)+
+    scale_fill_pomological()+
+    theme_pomological("Homemade Apple", 12)+
+    theme(axis.text.x=element_blank(),
+          legend.position = "bottom",
+          legend.key = element_rect(colour = "black"))
+
+ paint_pomological(p,res = 110) %>%
+   magick::image_write("barplot-painted.png")
+```
+
+
+
+```{r pomological, echo=FALSE, fig.cap="pomological ggplot bordeaux dataset", out.width = '100%'}
+knitr::include_graphics("./image/barplot-painted.png")
+```
+
+
+# Running PCA or SVD
+
+To run a PCA, we will scale the data (center=TRUE, scale=TRUE) and run singular value decomposition (SVD). This generates 3 matrices, U, D, V.  D is a diagonal matrix, with the eigenvalues. U and V are the left and right singular values, which include the scores of the rows and columns in the reduced space. 
+
+
+```{r}
+bordeauxS= scale(bordeaux,center = TRUE, scale = TRUE)
+s= svd(bordeauxS)
+s$u %*% diag(s$d) %*% t(s$v) #  X = U D V'
+```
+
+The first component (PC1, horizontal) captured almost 77% of the variance or information in the data, and shows that boring/medicore wines were distinct from good/excellent, with Vin de table  (Table Wine) and Vin de marque (Brand Wine) associated with the former descriptions. Regional Bordeaux wine (Bordeaux d'origine) was close to the origin, with Cru and Grand Cru wines associated with good/excellent terms
+
+The second component represented 18% of the variance, and mostly distinguished boring from medicore wine.  There was little distinction between good and excellent on PC 2. 
+
+
+```{r pca, echo=FALSE, fig.cap="PCA of bordeaux dataset", out.width = '100%'}
+knitr::include_graphics("./image/bordeaux_pca.png")
+```
+# Visualization of Results; Explor, pcaExplorer 
+
+## Explor
+Julien Barnier's package Explor provides a nice shiny interface to explore matrix factorization results including PCA, Correspondence analysis, or Multiple correspondence analysis and other dimension reduction methods available in R packages ade4, vegan, FactoMineR GDATools, MASS, stats (prcomp or princomp)
+
+```{r explor, echo=FALSE, fig.cap="Explor", out.width = '70%'}
+knitr::include_graphics("./image/explor.png")
+```
+
+
+## pcaExplorer
+Federico Marini and Harald Binder have create a Bioconductor package called pcaExplorer
+
+```{r pcaExplorer, echo=FALSE, fig.cap="PCA of bordeaux dataset", out.width = '70%'}
+knitr::include_graphics("./image/pcaExplor.png")
+```
+
+
+
+
