@@ -10,7 +10,7 @@ Authors@R:
              role = c("aut"),
              email = "lrnshoe@gmail.com",
              comment = c(ORCID = "0000-0002-6035-7381")))
-Description: A short workshop that explains how to compute PCA from basics, and the different implementations of PCA in R
+Description: A short workshop that explains how to compute PCA from basics, and the different implementations of PCA in R.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
