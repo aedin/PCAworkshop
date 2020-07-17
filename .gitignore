@@ -2,8 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
-cache
-img
-*.html
 .gitattributes
 .gitignore

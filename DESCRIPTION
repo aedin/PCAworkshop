@@ -25,7 +25,6 @@ Suggests:
     BiocStyle,
     magick
 Imports:
-    DuoClustering2018,
     ggplot2, 
     ggfortify,
     factoextra, 
@@ -42,7 +41,8 @@ Imports:
     scatterD3,
     ComplexHeatmap,
     uwot,
-    SingleCellExperiment
+    SingleCellExperiment,
+    DuoClustering2018
 URL: https://aedin.github.io/PCAworkshop/
 BugReports: https://github.com/aedin/PCAworkshop/issues/new/choose
 DockerImage: aculhane/pcabiocworkshop2020:latest
