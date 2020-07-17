@@ -66,15 +66,23 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="hitchhikers-guide-to-pca---demystifying-dimensionality-reduction-in-rbioconductor" class="section level1">
+
+<div id="hitchhikers-guide-to-matrix-factorization-and-pca-demystifying-dimensionality-reduction" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#hitchhikers-guide-to-pca---demystifying-dimensionality-reduction-in-rbioconductor" class="anchor"></a>Hitchhiker’s Guide to PCA: <br> Demystifying dimensionality reduction in R/Bioconductor</h1></div>
-<p><em>Lauren Hsu, Aedin Culhane</em></p>
+<a href="#hitchhikers-guide-to-matrix-factorization-and-pca-demystifying-dimensionality-reduction" class="anchor"></a>Hitchhiker’s Guide to Matrix Factorization and PCA: Demystifying dimensionality reduction</h1></div>
+</div>
+<div id="instructors-names-and-contact-information" class="section level1">
+<h1 class="hasAnchor">
+<a href="#instructors-names-and-contact-information" class="anchor"></a>Instructor(s) name(s) and contact information</h1>
+<ul>
+<li>Aedin Culhane</li>
+<li>Lauren Hsu</li>
+</ul>
 <div id="description" class="section level2">
 <h2 class="hasAnchor">
 <a href="#description" class="anchor"></a>Description</h2>
-<p>This workshop will provide a beginner’s guide to principal component analysis (PCA), the difference between singular value decomposition, different forms of PCA and fast PCA for single-cell data. We will describe how to detect artifacts and select the optimal number of components. It will focus on SVD and PCA applied to single-cell data.</p>
-<p>Principal component analysis (PCA) is a key step in many bioinformatics pipelines. In this interactive session we will take a deep dive into the various implementations of singular value decomposition (SVD) and principal component analysis (PCA) to clarify the relationship between these methods, and to demonstrate the equivalencies and contrasts between these methods. We will also discuss interpretation of outputs, as well as some common pitfalls and sources of confusion in utilizing these methods.</p>
+<p>This workshop will provide a beginner’s guide to matrix factorization, principal component analysis (PCA), the difference between singular value decomposition, different forms of PCA and fast PCA for single-cell data. We will describe how to detect artifacts and select the optimal number of components. It will focus on SVD, PCA applied single-cell data.</p>
+<p>Principal component analysis (PCA) is a key step in many bioinformatics pipelines. In this interactive session we will take a deep dive into the various implementations of singular value decomposition (SVD) and principal component analysis (PCA) to clarify the relationship between these methods, and to demonstrate the equivalencies and contrasts between these methods. We will describe correspondence analysis (COA) and demonstrate how it differs from PCA. We will also discuss interpretation of outputs, as well as some common pitfalls and sources of confusion in utilizing these methods.</p>
 <div id="pre-requisites" class="section level3">
 <h3 class="hasAnchor">
 <a href="#pre-requisites" class="anchor"></a>Pre-requisites</h3>
@@ -93,6 +101,7 @@
 <li>FactoMineR</li>
 <li>ade4</li>
 <li>irlba</li>
+<li>corral</li>
 <li>ggplot2</li>
 </ul>
 </div>
@@ -126,11 +135,18 @@
 <ol>
 <li>Describe the similarities and differences between the different implementations of PCA and SVD in R/Bioconductor</li>
 <li>Perform PCA/SVD on real data</li>
+<li>Apply COA on real data</li>
 <li>Creating plots to interpret PCA/SVD outputs, including diagnosis of problems like arch/horseshoe effect</li>
 </ol>
 </div>
 </div>
+<div id="installation" class="section level2">
+<h2 class="hasAnchor">
+<a href="#installation" class="anchor"></a>Installation</h2>
+<p>You can install the released version of PCAworkshop from</p>
 </div>
+</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
