@@ -1,5 +1,5 @@
 ---
-title: "Running Principal Component Analysus in R"
+title: "Running Principal Component Analysis in R"
 author: "Aedin Culhane"
 date: "July 15, 2020"
 output:
@@ -36,7 +36,7 @@ library(ggplot2)
 # PCA in R
 In R, there are several functions in many different packages that allow us to perform PCA. We will not review all of these, however will provide examples of the following;
 
-* svd() (stats)  *** on centered data** 
+* svd() (stats)  ** on centered data** 
 * prcomp() (stats)
 * princomp() (stats)  ** on cor matrix **
 * PCA() (FactoMineR)
@@ -59,8 +59,7 @@ Give an input matrix P and result res
 |dudi.pca(P, center=TRUE, scale=TRUE) | res\$c1 | res\$li | scatter(res)|
 
 
-With ade4::dudi.pca and prcomp the default is center = TRUE, scale = TRUE.But  with princomp, cor=FALSE by default. 
-
+With ade4::dudi.pca and prcomp the default is `center = TRUE, scale = TRUE`. But with princomp, `cor=FALSE` is the default.
 
 #  Create a simple toy dataset
 Create a cloud of points; two vectors, x,y of length 100. 
@@ -79,7 +78,7 @@ P <- data.frame(x_obs=x_obs,y_obs=y_obs) #places points in matrix
 summary(P)
 ```
 
-Basic histogram of the two distrubition
+Basic histogram of the two distributions:
 
 ```{r}
  par(mfrow=c(1,2))
@@ -88,18 +87,18 @@ Basic histogram of the two distrubition
 ```
  
 
-
 Plot x,y. Show a "orange" point of the center (mean (x), mean(y)) on plot
 
-```{r}                                                                          plot(P,asp=1,col=1) #plot points
+```{r}                                                                          
+plot(P,asp=1,col=1) #plot points
 points(x=mean(x_obs),y=mean(y_obs),col="orange", pch=19) #show center
 ```
  
  
 
-# Computing via svd of **unscaled**, centered, covariance  matrix
+# Computing via svd of **unscaled**, centered, covariance matrix
 
-PCA can be computed as a singular value decomposition of a column centered matrix. Therefore we first processs the matrix.  In this example, we don't scale. This is not advised.
+PCA can be computed as a singular value decomposition of a column centered matrix. Therefore we first processs the matrix. In this example, we don't scale. This is not advised.
 
 ```{r}
 #center matrix
@@ -149,7 +148,8 @@ which is equivalent to
 ```{r}
 prcomp(P)$rotation
 ```
-The right singular vectors are the eigenvectors of M^t^M.  Next I plot the principal axes (yellow):
+
+The right singular vectors are the eigenvectors of M^t^M. Next I plot the principal axes (yellow):
  
 ```{r}
 plot(P,asp=1,col=1) #plot points
@@ -159,7 +159,7 @@ lines(x_obs,eigenVectors[2,1]/eigenVectors[1,1]*M[x]+mean(y_obs),col=8)
 
 This shows the first principal axis. Note that it passes through the mean as expected. The ratio of the eigenvectors gives the slope of the axis. 
 
-Next plot the second principal axis, orthlogonal to the first
+Next plot the second principal axis, orthogonal to the first
 
 ```{r}
 plot(P,asp=1,col=1) #plot points
@@ -167,27 +167,20 @@ points(x=mean(x_obs),y=mean(y_obs),col="orange", pch=19) #show center
 lines(x_obs,eigenVectors[2,1]/eigenVectors[1,1]*M[x]+mean(y_obs),col=8)
 lines(x_obs,eigenVectors[2,2]/eigenVectors[1,2]*M[x]+mean(y_obs),col=8)
 ```
-shows the second principal axis, which is orthogonal to the first (recall that the matrix V^t^ in the singular value decomposition is orthogonal). This can be checked by noting that the second principal axis is also
-                                                     
-as the product of orthogonal slopes is -1. 
-
-
-
-
-
-
-
+shows the second principal axis, which is orthogonal to the first (recall that the matrix V^t^ in the singular value decomposition is orthogonal). This can be checked by noting that the second principal axis is also, as the product of orthogonal slopes is -1. 
 
 ## PCA (scaled data) using Singular value decomposition  (svd)
-Given a matrix X  of dimension n×p, SVD decomposes it to:
 
-$M = U D V^{t}$
+Given a matrix X of dimension n×p, SVD decomposes it to:
+
+$$M = U D V^{t}$$
 
 U,V define the left and right singular values 
 
 U and V are square orthogonal:
-$UU^{t} = I_{p}$
-$VV^{t} = I_{n}$
+
+$$UU^{t} = I_{p}$$
+$$VV^{t} = I_{n}$$
 
 The output is 
 
@@ -264,11 +257,11 @@ eigSum.svd
 ## Demonstrating X = U D V' 
 SVD returns a list with components
 
-d	 = a vector containing the singular values of x, of length min(n, p), sorted decreasingly.
+d	= a vector containing the singular values of x, of length min(n, p), in descending order
 
 u	= a matrix whose columns contain the left singular vectors of x, present if nu > 0. Dimension c(n, nu).
 
-v	 =a matrix whose columns contain the right singular vectors of x, present if nv > 0. Dimension c(p, nv).
+v	= a matrix whose columns contain the right singular vectors of x, present if nv > 0. Dimension c(p, nv).
 
 The product of these matrix X = U D V'  recovers the original matrix;
 ```{r}
@@ -359,7 +352,7 @@ p2$loadings
 head(p2$scores,2)
 ```
 
-Set cor = TRUE in your call to princomp in order to perform PCA on the correlation matrix (instead of the covariance matrix)
+Set `cor = TRUE` in your call to princomp in order to perform PCA on the correlation matrix (instead of the covariance matrix)
 
 ```{r}
 p2b<-princomp(P, cor = TRUE)
@@ -406,13 +399,14 @@ head(p4$tab)  # centered/scaled data.
 head(scale(P))
 ```
 
-The values used for centering are stored in cent, it is a the colMeans. norm provides the sd of the columns
+The values used for centering are stored in `cent`, it is equal to the `colMeans`. `norm` provides the sd of the columns
 ```{r}
 p4$cent == colMeans(P)
 sd.n <- function(x) sqrt(var(x) * (length(x) - 1)/length(x))
 identical(p4$norm,apply(P, 2, sd.n))
 ```
-The summary printout is equivalent to P3 (p3$eig) above. The eigenvales are stored in p4$eig.
+The summary printout is equivalent to P3 (p3$eig) above. 
+The eigenvales are stored in p4$eig.
 
 ```{r}
 summary(p4)
@@ -420,41 +414,44 @@ p4$eig
 p4$c1
 p4$co
 ```
-The cumulative % of variance explained by each component ;
+
+The cumulative % of variance explained by each component:
 ```{r}
 (k <- 100 * p4$eig/sum(p4$eig))
 cumsum(k)
 ```
 
-nf is an integer giving the number of axes kept. nf will always be lower that the number of row or columns of the matrix -1.
+`nf` is an integer giving the number of axes kept. `nf` will always be smaller than the smaller of: the number of rows or number of columns of the matrix; minus 1.
 ```{r}
 p4$nf
 ```
 
-c1 gives the variables’ coordinates, normed to 1. It is also called the
-coefficients of the combination or the loadings of variables.  Equally the outpur matrix l1 gives the individuals’ coordinates, normed to 1. It is also called the
+`c1` gives the variables’ coordinates, normed to 1. It is also called the
+coefficients of the combination or the loadings of variables.  
+
+Equally, the output matrix `l1` gives the individuals’ coordinates, normed to 1. It is also called the
 loadings of individuals.
 ```{r}
 p4$c1
 sum(p4$cw * p4$c1$CS1^2)
 ```
 
-co gives the variables’ coordinates, normed to the square root of the eigenvalues.
+`co` gives the variables’ coordinates, normed to the square root of the eigenvalues.
 ```{r}
 p4$co
 sum(p4$cw * p4$co$Comp1^2)
 ```
 
 
-The link between  c1 and co is defined by:
+The link between `c1` and `co` is defined by:
 ```{r}
 p4$c1$CS1 * sqrt(p4$eig[1])
 ```
 
 
-# Zscore normalization
+# Z-score normalization
 
-The default version of scale is a zscore standarization
+The default version of scale is a z-score standarization
 
 ```{r}
 zscore<- function(x) (x-mean(x))/sd(x)
@@ -463,7 +460,8 @@ all(PZ== scale(P))
 data.frame(mean=round(colMeans(PZ)), sd= apply(PZ,2, sd))
 ```
 
-Then by extension, a P0, svd of a scaled matrix is the same as svd of a zscore matrix
+Then by extension, a P0, svd of a scaled matrix is the same as svd of a z-score matrix
+
 ```{r}
 pz<-svd(PZ)
 all(pz$v == p0$v)
@@ -473,7 +471,7 @@ all(pzEigs<-pz$d^2/(nrow(pz$u) - 1) ==eigs)
 
 ## Comparision of results of different methods
 
-There is also a nice package called factoextra. This works all of the above classes
+There is also a nice package called `factoextra`. This works all of the above classes
 
 ```{r}
 library(factoextra)
@@ -497,7 +495,7 @@ e
 
 # Visualization and Exploration of results
 
-The github package https://github.com/juba/explor is useful for exploring data. It includes plotting functions for many packages including ade4, FactoMineR and baseR functions prcomp and princomp;
+The github package [`explor`](https://github.com/juba/explor) is useful for exploring data. It includes plotting functions for many packages including ade4, FactoMineR and baseR functions prcomp and princomp;
 
 For now on, it is usable the following types of analyses :
 
