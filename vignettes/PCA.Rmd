@@ -178,15 +178,24 @@ as the product of orthogonal slopes is -1.
 
 
 
-## PCA (scaled data) using svd
-Singular value decomposition of M. The singular value decomposition of M decomposes it into M=UDV^t^ where D is a diagonal matrix and both U and V^t^ are orthogonal matrices.
+## PCA (scaled data) using Singular value decomposition  (svd)
+Given a matrix X  of dimension n×p, SVD decomposes it to:
 
+$M = U D V^{t}$
+
+U,V define the left and right singular values 
+
+U and V are square orthogonal:
+$UU^{t} = I_{p}$
+$VV^{t} = I_{n}$
 
 The output is 
 
 d	- a vector containing the singular values 
 u	- the left singular vectors 
 v	- the right singular vectors of x
+
+Relating to prcomp;
 
 The columns u from the SVD correspond to the principal components x in the PCA. 
 
@@ -271,7 +280,8 @@ which equals the scaled matrix that was decomposed using svd
 scale(P)%>% head
 ```
 
-## prcomp
+
+## Comparing to prcomp
 
 First stats::prcomp.  The eigenvectors are stored in \$rotation. Note these are the same as svd$v on scale data 
 ```{r}
@@ -365,6 +375,7 @@ http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practi
 
 
 ## FactoMineR
+
 FactoMineR::PCA calls svd to compute the PCA
 
 
@@ -384,6 +395,7 @@ p3$var$coord
 
 
 ## ADE4::dudi.pca
+
 First ade4::dudi.pca scales the data and stores the scaled data in $tab. In PCA this will be almost equivalent to scale. However there is a minor difference (see https://pbil.univ-lyon1.fr/R/pdf/course2.pdf).  ade4 usees the duality diagram framework for computing pca and other matrix factorizations (so it provides lw and cw which are the row and columns weights). See Cruz and Holmes 2011 for a wonderful tutorial on the duality diagram framework https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3265363/
 
 
@@ -440,7 +452,8 @@ p4$c1$CS1 * sqrt(p4$eig[1])
 ```
 
 
-### Zscore normalization
+# Zscore normalization
+
 The default version of scale is a zscore standarization
 
 ```{r}
@@ -569,6 +582,7 @@ library(ggplot2)
 library(ggfortify)
 ggplot2::autoplot(ir.pca, data=iris, colour="Species", frame=TRUE, frame.type="t") 
 ```
+
 ```{r}
 library(ggplot2)
 ggplot(ir.pca,aes(PC1, PC2))+ 

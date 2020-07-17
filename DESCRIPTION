@@ -36,7 +36,9 @@ Imports:
     tibble,
     irlba,
     corral,
-    glmpca
+    glmpca,
+    scatterD3,
+    ComplexHeatmap
 Remotes:
     gadenbuie/ggpomological
 URL: https://aedin.github.io/PCAworkshop/
