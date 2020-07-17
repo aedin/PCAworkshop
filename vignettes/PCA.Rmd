@@ -1,5 +1,5 @@
 ---
-title: "Running Principal Component Analysis in R"
+title: "Principal Component Analysis in R"
 author: "Aedin Culhane"
 date: "July 15, 2020"
 output:
