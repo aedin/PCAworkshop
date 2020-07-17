@@ -37,7 +37,6 @@ Imports:
     magrittr,
     reshape2,
     tibble,
-    irlba,
     corral,
     glmpca,
     scatterD3,
