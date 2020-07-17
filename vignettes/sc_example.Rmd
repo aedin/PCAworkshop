@@ -78,7 +78,7 @@ Matrix factorization methods like PCA enable us to look at both "row" and "colum
 
 ## PCA
 
-First, we will select features with a simple, crude approach -- we'll sort the genes by variance, then select the 500 genes with highest variance. Selecting variable genes will improve the signal to noise ratio. Moreover, from a practical perspective, this will reduce the dataset size so that analysis steps will be computationally tractable. (Typically, in actual analysis pipelines, selection of highly variable genes (HVGs) uses a mean-variance stabilization, for example as in the `scran` package, or in the `Seurat` packages. This is because there is a relationship between the mean and the variance of the features. See the [*Orchestrating Single Cell Analysis*](https://osca.bioconductor.org/feature-selection.html) book for more discussion on feature selection approaches.)
+First, we will select features with a simple, crude approach -- we'll sort the genes by variance, then select the 500 genes with highest variance. Selecting variable genes will improve the signal to noise ratio. Moreover, from a practical perspective, this will reduce the dataset size so that analysis steps will be computationally tractable. (Typically, in actual analysis pipelines, selection of highly variable genes (HVGs) is performed using a mean-variance stabilization, for example as in the `scran` package, or in the `Seurat` packages. This is because there is a relationship between the mean and the variance of the features. See the [*Orchestrating Single Cell Analysis*](https://osca.bioconductor.org/feature-selection.html) book for more discussion on feature selection approaches.)
 
 ```{r}
 gene_vars <- apply(logcounts_mat, FUN = var, MARGIN = 1)
@@ -117,7 +117,7 @@ plot_embedding(logcounts_prc$rotation,
 
 These examples illustrate the importance of performing pre-processing -- when PCA is performed on raw counts, we see an arch effect. In contrast, when performed on log-transformed* counts, there is no arch effect. See our recent [mini-review article](https://www.frontiersin.org/articles/10.3389/fonc.2020.00973/full) in *Frontiers in Oncology* for further discussion of data pre-processing and transformations [@frontiers].
 
-\* *Note: while the log-transformation does improve the results with PCA here, recent papers examine the theoretical basis for this transformation and question whether it is appropriate for scRNAseq data, such as Townes et al. 2019 and Hafemeister & Satija 2019. Nonetheless, log(x+1) remains a popular pre-processing choice.*
+\* *Note: while the log-transformation(*$log(x+1)$*)does improve the results with PCA here, recent papers examine the theoretical basis for this transformation and question whether it is appropriate for scRNAseq data, such as Townes et al. 2019 and Hafemeister & Satija 2019. Nonetheless,* $log(x+1)$ *remains a popular pre-processing choice.*
 
 ### *Interactive example 1*
 
@@ -177,22 +177,22 @@ This dataset is small compared to many that we encounter in biology. We are ofte
 
 **How can we speed this up?**
 
-The `prcomp` function uses an `svd` call, which will compute **all** of the components (which, in this case, would be 500). However, the point of doing PCA is that we are only going to use a few, say 10 (almost certainly not more than 50), components. `irlba::irlba` also performs singular value decomposition, but uses a fast approximation.
+The `prcomp` function uses an `svd` call, which by default, will compute **all** of the components: the number of components is the smaller dimension (number of rows or columns). We can use the `nv` (or `nu`) arguments in `svd` to control how many components are returned, but all of the components will nonetheless be computed. However, we are usually not interested in keeping all the components, so we don't need to compute them beyond PC50. `irlba::irlba` uses an iterative algorithm to compute a fast approximation to singular value decomposition, and provides a much speedier alternative for when we don't need a full decomposition.
 
 ```{r}
 set.seed(2020)
-mat <- matrix(sample(1:10,100000, replace = T), nrow = 1000)
-system.time(svd_mat <- svd(mat))
+mat <- matrix(sample(1:10,10000000, replace = T), nrow = 1000)
+system.time(svd_mat <- svd(mat, nv = 10))
 system.time(irl_mat <- irlba::irlba(mat, nv = 10))
 ```
 
-Since this demonstration matrix is small, both `irlba` and `svd` are fast. However, we can observe that `svd` takes nearly twice as long as `irlba`. As datasets scale in size, this has a big impact, and the difference in speed grows.
+Since this demonstration matrix is small, both `irlba` and `svd` are fast. However, we can observe that `svd` takes substantially longer than `irlba`. As datasets scale in size, this has a big impact, and the difference in speed grows. (This difference also depends on what machine you are running on -- with less compute power, the difference will be starker.)
 
 We can verify that `irlba` is giving us a good approximation of `svd`:
 
 Comparing singular values.. 
 ```{r}
-svd_mat$d[1:10]
+svd_mat$d
 irl_mat$d
 ```
 
@@ -310,6 +310,6 @@ zm4uneq_logcounts <- assay(zm4uneq, 'logcounts')
 ```
 
 
-
+## References
 
 
