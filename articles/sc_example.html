@@ -44,7 +44,34 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../articles/PCA.html">Workshop</a>
+  <a href="../index.html">
+    <span class="fas fa fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/COA.html">Correspondence Analysis in R</a>
+    </li>
+    <li>
+      <a href="../articles/Intro.html">A short PCA vignette - Wine Example</a>
+    </li>
+    <li>
+      <a href="../articles/PCA.html">Principal Component Analysis in R</a>
+    </li>
+    <li>
+      <a href="../articles/sc_example.html">PCA example: scRNAseq</a>
+    </li>
+  </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -280,10 +307,10 @@
 <span class="no">mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fl">1</span>:<span class="fl">10</span>,<span class="fl">100000</span>, <span class="kw">replace</span> <span class="kw">=</span> <span class="no">T</span>), <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">1000</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="no">svd_mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span>(<span class="no">mat</span>))</pre></body></html></div>
 <pre><code>##    user  system elapsed 
-##   0.018   0.000   0.010</code></pre>
+##   0.014   0.004   0.010</code></pre>
 <div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="no">irl_mat</span> <span class="kw">&lt;-</span> <span class="kw pkg">irlba</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/irlba/man/irlba.html">irlba</a></span>(<span class="no">mat</span>, <span class="kw">nv</span> <span class="kw">=</span> <span class="fl">10</span>))</pre></body></html></div>
 <pre><code>##    user  system elapsed 
-##   0.014   0.000   0.008</code></pre>
+##   0.010   0.004   0.009</code></pre>
 <p>Since this demonstration matrix is small, both <code>irlba</code> and <code>svd</code> are fast. However, we can observe that <code>svd</code> takes nearly twice as long as <code>irlba</code>. As datasets scale in size, this has a big impact, and the difference in speed grows.</p>
 <p>We can verify that <code>irlba</code> is giving us a good approximation of <code>svd</code>:</p>
 <p>Comparing singular values..</p>
@@ -365,11 +392,11 @@
 <p><code>prcomp</code> runtime:</p>
 <div class="sourceCode" id="cb36"><html><body><pre class="r"><span class="no">prc_time</span></pre></body></html></div>
 <pre><code>##    user  system elapsed 
-##   1.187   0.088   0.663</code></pre>
+##   1.199   0.116   0.694</code></pre>
 <p><code>corral</code> runtime:</p>
 <div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="no">corral_time</span></pre></body></html></div>
 <pre><code>##    user  system elapsed 
-##   0.615   0.177   0.541</code></pre>
+##   0.678   0.200   0.616</code></pre>
 <p>Again, we can visualize the direct output from <code>corral</code>:</p>
 <div class="sourceCode" id="cb40"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span>(<span class="no">corral_counts</span>$<span class="no">v</span>,
                <span class="kw">xpc</span> <span class="kw">=</span> <span class="fl">1</span>,
