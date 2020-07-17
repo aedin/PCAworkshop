@@ -83,7 +83,7 @@
 <h3 class="hasAnchor">
 <a href="#necessary-r-libraries" class="anchor"></a>Necessary R libraries</h3>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co"># Install, if necessary, and load necessary libraries and set up R session</span>
-<span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, <span class="kw">quietly</span> <span class="kw">=</span> <span class="fl">TRUE</span>)) <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"BiocManager"</span>)
+<span class="co">#if (!requireNamespace("BiocManager", quietly = TRUE)) #install.packages("BiocManager")</span>
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggplot2</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">explor</span>)
