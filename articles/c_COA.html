@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PCAworkshop</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -395,9 +395,9 @@ Dimensions of output elements-----------------------------------
 <p><img src="fig/unnamed-chunk-23-1.png" width="1000"></p>
 <p>Correlation between <code>glmpca</code> and <code>corral</code>. Note the PCs are flipped, PC1 in <code>corral</code> shares r=0.99 correlation with PC2 of <code><a href="https://rdrr.io/pkg/glmpca/man/glmpca.html">glmpca(type = poi)</a></code>.</p>
 <div class="sourceCode" id="cb50"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span>(<span class="no">coa2</span>$<span class="no">factors</span>[,<span class="fl">1</span>], <span class="no">coa3</span>$<span class="no">PCv</span>[,<span class="fl">2</span>])</pre></body></html></div>
-<pre><code>[1] 0.9912386</code></pre>
+<pre><code>[1] -0.9893969</code></pre>
 <div class="sourceCode" id="cb52"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cor</a></span>(<span class="no">coa2</span>$<span class="no">factors</span>[,<span class="fl">2</span>], <span class="no">coa3</span>$<span class="no">PCv</span>[,<span class="fl">1</span>])</pre></body></html></div>
-<pre><code>[1] -0.9900288</code></pre>
+<pre><code>[1] 0.992287</code></pre>
 <div class="sourceCode" id="cb54"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(<span class="kw">mfrow</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>))
 <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(-<span class="no">coa2</span>$<span class="no">factors</span>[,<span class="fl">1</span>], <span class="no">coa3</span>$<span class="no">PCv</span>[,<span class="fl">2</span>])
 <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">coa2</span>$<span class="no">factors</span>[,<span class="fl">2</span>], <span class="no">coa3</span>$<span class="no">PCv</span>[,<span class="fl">1</span>])</pre></body></html></div>
@@ -439,7 +439,7 @@ attached base packages:
 [8] base     
 
 other attached packages:
- [1] ComplexHeatmap_2.5.3 scatterD3_0.9.1      glmpca_0.1.0        
+ [1] ComplexHeatmap_2.5.3 scatterD3_0.9.1      glmpca_0.2.0        
  [4] irlba_2.3.3          Matrix_1.2-18        ade4_1.7-15         
  [7] corral_0.99.32       ggfortify_0.4.10     ggplot2_3.3.2       
 [10] knitr_1.29          
