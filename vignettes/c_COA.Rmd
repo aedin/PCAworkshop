@@ -17,7 +17,7 @@ vignette: >
 ```{r setup, echo=FALSE, message=FALSE, warning=FALSE}
 library(knitr)
 # Set up the environment
-opts_chunk$set(cache.path='cache/', fig.path='fig/', cache=FALSE, tidy=FALSE, fig.keep='high', echo=TRUE, dpi=100, warnings=FALSE, message=FALSE, comment=NA, warning=FALSE, results='as.is', fig.width = 10, fig.height = 6) 
+opts_chunk$set(echo=TRUE, dpi=100, warnings=FALSE, message=FALSE, warning=FALSE, fig.width = 10, fig.height = 6) 
 ```
 
 ### Necessary R libraries
