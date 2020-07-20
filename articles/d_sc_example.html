@@ -307,10 +307,10 @@
 <span class="no">mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fl">1</span>:<span class="fl">10</span>,<span class="fl">10000000</span>, <span class="kw">replace</span> <span class="kw">=</span> <span class="no">T</span>), <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">1000</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="no">svd_mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span>(<span class="no">mat</span>, <span class="kw">nv</span> <span class="kw">=</span> <span class="fl">10</span>))</pre></body></html></div>
 <pre><code>##    user  system elapsed 
-##   5.981   0.495   3.359</code></pre>
+##   7.044   0.649   3.989</code></pre>
 <div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="no">irl_mat</span> <span class="kw">&lt;-</span> <span class="kw pkg">irlba</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/irlba/man/irlba.html">irlba</a></span>(<span class="no">mat</span>, <span class="kw">nv</span> <span class="kw">=</span> <span class="fl">10</span>))</pre></body></html></div>
 <pre><code>##    user  system elapsed 
-##   2.145   0.028   1.106</code></pre>
+##   2.561   0.085   1.385</code></pre>
 <p>Since this demonstration matrix is small, both <code>irlba</code> and <code>svd</code> are fast. However, we can observe that <code>svd</code> takes substantially longer than <code>irlba</code>. As datasets scale in size, this has a big impact, and the difference in speed grows. (This difference also depends on what machine you are running on – with less compute power, the difference will be starker.)</p>
 <p>We can verify that <code>irlba</code> is giving us a good approximation of <code>svd</code>:</p>
 <p>Comparing singular values..</p>
@@ -392,11 +392,11 @@
 <p><code>prcomp</code> runtime:</p>
 <div class="sourceCode" id="cb36"><html><body><pre class="r"><span class="no">prc_time</span></pre></body></html></div>
 <pre><code>##    user  system elapsed 
-##   1.005   0.084   0.573</code></pre>
+##   1.235   0.137   0.720</code></pre>
 <p><code>corral</code> runtime:</p>
 <div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="no">corral_time</span></pre></body></html></div>
 <pre><code>##    user  system elapsed 
-##   0.571   0.180   0.533</code></pre>
+##   0.674   0.218   0.633</code></pre>
 <p>Again, we can visualize the direct output from <code>corral</code>:</p>
 <div class="sourceCode" id="cb40"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span>(<span class="no">corral_counts</span>$<span class="no">v</span>,
                <span class="kw">xpc</span> <span class="kw">=</span> <span class="fl">1</span>,
