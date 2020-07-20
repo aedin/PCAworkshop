@@ -192,7 +192,7 @@ We can verify that `irlba` is giving us a good approximation of `svd`:
 
 Comparing singular values.. 
 ```{r}
-svd_mat$d
+svd_mat$d[1:10]
 irl_mat$d
 ```
 
@@ -244,7 +244,7 @@ corral_logcounts <- corral(logcounts_mat)
 corral_logcounts
 ```
 
-We used the `irlba` fast SVD approximation, so `corral` runs in a fraction of the time that `prcomp` takes:
+We used the `irlba` fast SVD approximation, so `corral` runs faster than `prcomp` (difference is more pronounced with less computational resources, e.g. on laptop):
 
 `prcomp` runtime:
 ```{r}
