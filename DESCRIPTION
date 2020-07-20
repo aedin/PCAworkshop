@@ -1,6 +1,6 @@
 Package: PCAworkshop
 Title: An introduction to matrix factorization and principal component analysis in R
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     c(person(given = "Aedin", family = "Culhane",
              role = c("aut", "cre"),
