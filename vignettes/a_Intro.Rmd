@@ -1,7 +1,7 @@
 ---
 title: "A short PCA vignette - Wine Example"
 author: "Aedin Culhane"
-date: "May 1, 2020"
+date: "May 1, 2021"
 output:
   rmarkdown::html_document:
     highlight: pygments
@@ -40,7 +40,7 @@ Principal component analysis (PCA) provides a method for visualizing the disting
 
 
 #  Dataset: Winetasting in Bordeaux
-This is a very simple example dataset: 200 judges performed a blind tasting of 5 red wines from Bordeaux, scoring each as boring, mediocre, good or excellent. 
+We will use a very simple example dataset of wine-tasting where 200 judges performed a blind tasting of 5 red wines from Bordeaux, scoring each as boring, mediocre, good or excellent. 
 
 The dataset is available in the `ade4` R package:
 
@@ -48,7 +48,7 @@ The dataset is available in the `ade4` R package:
 data(bordeaux)
 ```
 
-In French wines, table wine has fewer legal restrictions and is cheaper, whereas Cru and Grand Cru wine have tight rules and are more expensive.
+In French wines, table wine has fewer legal restrictions and is cheaper, whereas Cru and Grand Cru wine have more regulation standards and therefore are more expensive.
 
 ```{r bordeaux, echo=FALSE, fig.cap="A simple dataset example", out.width = '100%'}
 knitr::include_graphics("./image/Bordeaux1.png")
@@ -60,20 +60,13 @@ df<-bordeaux %>%
   tibble::rownames_to_column(var="Wine") %>%
   reshape2::melt(.,variable.name="Judge_Score",
                  value.name="Number")
-
+df
 ```
 
 
-```{r}
-score(dudi.coa(bordeaux, scan = FALSE))
-score(dudi.pca(bordeaux, scan = FALSE))
-```
+## Simple Data visualization with a barplot.. (and a fun graphics with `ggpomological`)
 
-
-
-## A tangent - Fun graphics with `ggpomological`
-
-Completely unrelated to PCA, but the `ggpomological` ggtheme is a fun one for displaying these wine data.  Pomology is a branch of botany that studies and cultivates fruit and [ggpomological](https://www.garrickadenbuie.com/project/ggpomological) is a ggtheme and palette that evokes the style and colors of old watercolor prints of pomology.
+Data visualization is important and always a good first step with any dataset, even simple ones. Lets visualize this data, with a simple barplot, before we apply PCA. To make it more interesting we will use the  `ggpomological` graphics ggtheme, to display these wine data. Pomology is a branch of botany that studies and cultivates fruit   [ggpomological](https://www.garrickadenbuie.com/project/ggpomological) is a pomology ggtheme and palette that evokes the style and colors of old watercolor prints of pomology. 
 
 
 ```{r, eval=FALSE}
@@ -103,7 +96,8 @@ knitr::include_graphics("./image/barplot-painted.png")
 
 # Running PCA or SVD
 
-To run a PCA, we will scale the data with `center=TRUE, scale=TRUE` and run singular value decomposition (SVD). This generates 3 matrices, U, D, V.  D is a diagonal matrix, with the eigenvalues. U and V are the left and right singular values, which include the scores of the rows and columns in the reduced space. 
+We will show two quick approaches to run PCA.  
+* First we will apply SVD to the z-score scaled data. We will scale the data with `center=TRUE, scale=TRUE` and run singular value decomposition (SVD). This generates 3 matrices, U, D, V.  D is a diagonal matrix, with the eigenvalues. U and V are the left and right singular values, which include the scores of the rows and columns in the reduced space. 
 
 
 ```{r}
@@ -120,6 +114,15 @@ The second component represented 18% of the variance, and mostly distinguished b
 ```{r pca, echo=FALSE, fig.cap="PCA of bordeaux dataset", out.width = '100%'}
 knitr::include_graphics("./image/bordeaux_pca.png")
 ```
+
+* The above is PCA, but we can perform the same calculation by as calling a PCA function, for example if we call PCA is the R package `ade4`.  
+
+```{r}
+score(dudi.pca(bordeaux, scan = FALSE))
+```
+
+We will learn about the different R packages that run PCA, in the second vignette Principal Component Analysis in R and will apply PCA to genomics data in the 4th vignette of the workshop;  PCA example: scRNAseq. 
+
 # Visualization of Results; Explor, pcaExplorer 
 
 ## Explor
