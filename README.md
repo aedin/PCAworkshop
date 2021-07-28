@@ -1,4 +1,4 @@
-# Hitchhiker's Guide to Matrix Factorization and PCA: Demystifying dimensionality reduction
+# Dimension Reduction for Beginners: Hitchhiker's Guide to Matrix Factorization and PCA
 
 
 # Instructor(s) name(s) and contact information
