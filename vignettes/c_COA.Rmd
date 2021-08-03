@@ -1,7 +1,7 @@
 ---
 title: "Correspondence Analysis in R"
 author: "Aedin Culhane"
-date: "July 15, 2020"
+date: "July 15, 2021"
 output:
   rmarkdown::html_document:
     highlight: pygments
@@ -33,7 +33,7 @@ library(irlba)
 library(glmpca)
 library(ggplot2)
 library(scatterD3)
-library(ComplexHeatmap)
+suppressPackageStartupMessages(library(ComplexHeatmap))
 ```
 
 
@@ -318,12 +318,12 @@ GLM-PCA provides generalized PCA for probit and logit models but it is an iterat
 ```{r}
 
 iter=20
-tt<-lapply(1:iter, function(x) glmpca::glmpca(mat, L=2, fam="poi",verbose=FALSE))
+tt<-lapply(1:iter, function(x) glmpca::glmpca(mat, L=2, fam="poi"))
 factors1<-sapply(1:iter, function(i) tt[[i]]$factors$dim1)  # first factor
 factors2<-sapply(1:iter, function(i) tt[[i]]$factors$dim2)  # Second factor
 
-colnames(factors1) = paste0("PC1", 1:iter, "_")
-colnames(factors2) = paste0("PC2", 1:iter, "_")
+colnames(factors1) = paste0("PC1", 1:iter, sep="_")
+colnames(factors2) = paste0("PC2", 1:iter, sep="_")
 ```
 
 ```{r}
