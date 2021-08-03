@@ -155,14 +155,16 @@ Plot of first two components, colored by cluster. `autoplot` is a wrapper for pl
 
 ```{r, warning=FALSE}
 library(ggfortify)
-ggplot2::autoplot(pca1, colour=pheno$clust)+
+ggplot2::autoplot(pca1, 
+                  data=pheno, colour='clust')+
   ggtitle("Clusters")
 ```
 
 Plot of first two components, colored by batch. PCA does not split the count data by clusters.
 
 ```{r, warning=FALSE}
-ggplot2::autoplot(pca1, colour=pheno$batch)+
+ggplot2::autoplot(pca1, 
+                  data=pheno, colour='batch')+
   ggtitle("Batch")
 ```
 
