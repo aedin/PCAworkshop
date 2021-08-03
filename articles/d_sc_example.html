@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">PCAworkshop</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
       </span>
     </div>
 
@@ -45,7 +45,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -91,13 +91,13 @@
 
       
 
-      </header><script src="d_sc_example_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="d_sc_example_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>PCA example: scRNAseq</h1>
                         <h4 class="author">Lauren Hsu</h4>
             
-            <h4 class="date">7/16/2020</h4>
+            <h4 class="date">7/16/2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/aedin/PCAworkshop/blob/master/vignettes/d_sc_example.Rmd"><code>vignettes/d_sc_example.Rmd</code></a></small>
       <div class="hidden name"><code>d_sc_example.Rmd</code></div>
@@ -111,15 +111,17 @@
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>Single-cell ’omics analysis enables high-resolution characterization of heterogeneous populations of cells by quantifying measurements in individual cells and thus provides a fuller, more nuanced picture into the complexity and heterogeneity between cells. However, the data also present new and significant challenges as compared to previous approaches, especially as single-cell data are much larger and sparser than data generated from bulk sequencing methods. Dimensionality reduction is a key step in the single-cell analysis to address the high dimensionality and sparsity of these data, and to enable the application of more complex, computationally expensive downstream pipelines.</p>
 <p>In this example, we will use the <code>Zhengmix4eq</code> benchmarking dataset from the <a href="https://bioconductor.org/packages/release/data/experiment/html/DuoClustering2018.html"><code>DuoClustering2018</code></a> package.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">SingleCellExperiment</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">corral</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">ggplot2</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">uwot</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">corral</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jlmelville/uwot">uwot</a></span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">DuoClustering2018</span>)
-<span class="no">zm4eq.sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DuoClustering2018/man/sce_full_Zhengmix.html">sce_full_Zhengmix4eq</a></span>()</pre></body></html></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">DuoClustering2018</span><span class="op">)</span>
+<span class="va">zm4eq.sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DuoClustering2018/man/sce_full_Zhengmix.html">sce_full_Zhengmix4eq</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>The data loads as a <a href="https://bioconductor.org/packages/release/bioc/html/SingleCellExperiment.html"><code>SingleCellExperiment</code></a> object:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">zm4eq.sce</span></pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">zm4eq.sce</span></code></pre></div>
 <pre><code>## class: SingleCellExperiment 
 ## dim: 15568 3994 
 ## metadata(1): log.exprs.offset
@@ -131,12 +133,15 @@
 ##   regulatory.t9696
 ## colData names(14): dataset barcode ... libsize.drop feature.drop
 ## reducedDimNames(2): PCA TSNE
+## mainExpName: NULL
 ## altExpNames(0):</code></pre>
 <p>We’ll use <code>assay</code> to access the count and logcount matrices. The genes are in the rows, and the cells are in the columns.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">counts_mat</span> <span class="kw">&lt;-</span> <span class="fu">assay</span>(<span class="no">zm4eq.sce</span>, <span class="st">'counts'</span>)
-<span class="no">logcounts_mat</span> <span class="kw">&lt;-</span> <span class="fu">assay</span>(<span class="no">zm4eq.sce</span>, <span class="st">'logcounts'</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">counts_mat</span> <span class="op">&lt;-</span> <span class="fu">assay</span><span class="op">(</span><span class="va">zm4eq.sce</span>, <span class="st">'counts'</span><span class="op">)</span>
+<span class="va">logcounts_mat</span> <span class="op">&lt;-</span> <span class="fu">assay</span><span class="op">(</span><span class="va">zm4eq.sce</span>, <span class="st">'logcounts'</span><span class="op">)</span></code></pre></div>
 <p><code>colData</code> and <code>rowData</code> contain (and can be used to access) the cell and gene metadata, respectively.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu">colData</span>(<span class="no">zm4eq.sce</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">colData</span><span class="op">(</span><span class="va">zm4eq.sce</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## DataFrame with 6 rows and 14 columns
 ##               dataset          barcode     phenoid total_features
 ##             &lt;integer&gt;      &lt;character&gt; &lt;character&gt;      &lt;integer&gt;
@@ -178,7 +183,8 @@
 ## b.cells6285           FALSE        FALSE        FALSE
 ## b.cells8679           FALSE        FALSE        FALSE
 ## b.cells6455           FALSE        FALSE        FALSE</code></pre>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu">rowData</span>(<span class="no">zm4eq.sce</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">rowData</span><span class="op">(</span><span class="va">zm4eq.sce</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## DataFrame with 6 rows and 10 columns
 ##                              id        symbol is_feature_control mean_counts
 ##                     &lt;character&gt;   &lt;character&gt;          &lt;logical&gt;   &lt;numeric&gt;
@@ -205,12 +211,14 @@
 ## ENSG00000230368            1           0.301030
 ## ENSG00000187634            2           0.477121</code></pre>
 <p>This dataset includes approximately 4,000 pre-sorted and annotated cells of 4 types mixed by Duo et al. in approximately equal proportions <span class="citation">(Duò, Robinson, and Soneson, n.d.)</span>. The cells were sampled from a “Massively parallel digital transcriptional profiling of single cells” <span class="citation">(Zheng et al. 2017)</span>.</p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="no">zm4eq.sce</span>$<span class="no">phenoid</span>) <span class="co"># the $ operator can be used to access columns in colData</span></pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">zm4eq.sce</span><span class="op">$</span><span class="va">phenoid</span><span class="op">)</span> <span class="co"># the $ operator can be used to access columns in colData</span></code></pre></div>
 <pre><code>## 
 ##         b.cells  cd14.monocytes naive.cytotoxic    regulatory.t 
 ##             999            1000             998             997</code></pre>
 <p>For each of the 4,000 cells, there are counts for over 15,000 genes.</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">counts_mat</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">counts_mat</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 15568  3994</code></pre>
 <p>When examining a dataset like this, we might be interested in understanding more about the cells – for example, how many clusters are there and what are the cell types?</p>
 <p>We might also be interested in understanding the features themselves, perhaps to identify from the 15,000 genes those that are associated wth particular clusters.</p>
@@ -220,29 +228,33 @@
 <h2 class="hasAnchor">
 <a href="#pca" class="anchor"></a>PCA</h2>
 <p>First, we will select features with a simple, crude approach – we’ll sort the genes by variance, then select the 500 genes with highest variance. Selecting variable genes will improve the signal to noise ratio. Moreover, from a practical perspective, this will reduce the dataset size so that analysis steps will be computationally tractable. (Typically, in actual analysis pipelines, selection of highly variable genes (HVGs) is performed using a mean-variance stabilization, for example as in the <code>scran</code> package, or in the <code>Seurat</code> packages. This is because there is a relationship between the mean and the variance of the features. See the <a href="https://osca.bioconductor.org/feature-selection.html"><em>Orchestrating Single Cell Analysis</em></a> book for more discussion on feature selection approaches.)</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="no">gene_vars</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="no">logcounts_mat</span>, <span class="kw">FUN</span> <span class="kw">=</span> <span class="no">var</span>, <span class="kw">MARGIN</span> <span class="kw">=</span> <span class="fl">1</span>)
-<span class="no">gene_vars</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span>(<span class="no">gene_vars</span>, <span class="kw">decreasing</span> <span class="kw">=</span> <span class="no">T</span>)
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">gene_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">logcounts_mat</span>, FUN <span class="op">=</span> <span class="va">var</span>, MARGIN <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="va">gene_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sort.html">sort</a></span><span class="op">(</span><span class="va">gene_vars</span>, decreasing <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
 
-<span class="no">counts_mat</span> <span class="kw">&lt;-</span> <span class="no">counts_mat</span>[<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">gene_vars</span>[<span class="fl">1</span>:<span class="fl">500</span>]),]
-<span class="no">logcounts_mat</span> <span class="kw">&lt;-</span> <span class="no">logcounts_mat</span>[<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">gene_vars</span>[<span class="fl">1</span>:<span class="fl">500</span>]),]</pre></body></html></div>
+<span class="va">counts_mat</span> <span class="op">&lt;-</span> <span class="va">counts_mat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">gene_vars</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">500</span><span class="op">]</span><span class="op">)</span>,<span class="op">]</span>
+<span class="va">logcounts_mat</span> <span class="op">&lt;-</span> <span class="va">logcounts_mat</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">gene_vars</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">500</span><span class="op">]</span><span class="op">)</span>,<span class="op">]</span></code></pre></div>
 <p>We will start by using <code>prcomp</code> to perform PCA on the counts and the logcounts, which will find cell embeddings in a lower dimensional space.</p>
 <p>For purposes of comparison later, we’ll also record the runtime.</p>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">prc_time</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="no">counts_prc</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html">prcomp</a></span>(<span class="no">counts_mat</span>))
-<span class="no">logcounts_prc</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html">prcomp</a></span>(<span class="no">logcounts_mat</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">prc_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">counts_prc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html">prcomp</a></span><span class="op">(</span><span class="va">counts_mat</span><span class="op">)</span><span class="op">)</span>
+<span class="va">logcounts_prc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html">prcomp</a></span><span class="op">(</span><span class="va">logcounts_mat</span><span class="op">)</span></code></pre></div>
 <p>We’ll use the <code>plot_embedding</code> function from the <code>corral</code> package to plot the cell embeddings:</p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span>(<span class="no">counts_prc</span>$<span class="no">rotation</span>,
-               <span class="kw">xpc</span> <span class="kw">=</span> <span class="fl">1</span>,
-               <span class="kw">plot_title</span> <span class="kw">=</span> <span class="st">'PCA on counts'</span>,
-               <span class="kw">color_vec</span> <span class="kw">=</span> <span class="no">zm4eq.sce</span>$<span class="no">phenoid</span>,
-               <span class="kw">color_title</span> <span class="kw">=</span> <span class="st">'Cell type'</span>,
-               <span class="kw">saveplot</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span><span class="op">(</span><span class="va">counts_prc</span><span class="op">$</span><span class="va">rotation</span>, 
+               xpc <span class="op">=</span> <span class="fl">1</span>, 
+               plot_title <span class="op">=</span> <span class="st">'PCA on counts'</span>, 
+               color_vec <span class="op">=</span> <span class="va">zm4eq.sce</span><span class="op">$</span><span class="va">phenoid</span>, 
+               color_title <span class="op">=</span> <span class="st">'Cell type'</span>, 
+               saveplot <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><img src="d_sc_example_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span>(<span class="no">logcounts_prc</span>$<span class="no">rotation</span>,
-               <span class="kw">xpc</span> <span class="kw">=</span> <span class="fl">1</span>,
-               <span class="kw">plot_title</span> <span class="kw">=</span> <span class="st">'PCA on logcounts'</span>,
-               <span class="kw">color_vec</span> <span class="kw">=</span> <span class="no">zm4eq.sce</span>$<span class="no">phenoid</span>,
-               <span class="kw">color_title</span> <span class="kw">=</span> <span class="st">'Cell type'</span>,
-               <span class="kw">saveplot</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span><span class="op">(</span><span class="va">logcounts_prc</span><span class="op">$</span><span class="va">rotation</span>, 
+               xpc <span class="op">=</span> <span class="fl">1</span>,
+               plot_title <span class="op">=</span> <span class="st">'PCA on logcounts'</span>, 
+               color_vec <span class="op">=</span> <span class="va">zm4eq.sce</span><span class="op">$</span><span class="va">phenoid</span>, 
+               color_title <span class="op">=</span> <span class="st">'Cell type'</span>, 
+               saveplot <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><img src="d_sc_example_files/figure-html/unnamed-chunk-9-2.png" width="700"></p>
 <p>These examples illustrate the importance of performing pre-processing – when PCA is performed on raw counts, we see an arch effect. In contrast, when performed on log-transformed* counts, there is no arch effect. See our recent <a href="https://www.frontiersin.org/articles/10.3389/fonc.2020.00973/full">mini-review article</a> in <em>Frontiers in Oncology</em> for further discussion of data pre-processing and transformations <span class="citation">(Hsu and Culhane 2020)</span>.</p>
 <p>* <em>Note: while the log-transformation(</em><span class="math inline">\(log(x+1)\)</span><em>)does improve the results with PCA here, recent papers examine the theoretical basis for this transformation and question whether it is appropriate for scRNAseq data, such as Townes et al. 2019 and Hafemeister &amp; Satija 2019. Nonetheless,</em> <span class="math inline">\(log(x+1)\)</span> <em>remains a popular pre-processing choice.</em></p>
@@ -251,19 +263,21 @@
 <a href="#interactive-example-1" class="anchor"></a><em>Interactive example 1</em>
 </h3>
 <p>On the count data, the first two PCs contain a strong arch effect. On both plots, use the <code>xpc</code> argument in the plotting function to change which PC you’re looking at. What do the 2nd and 3rd PCs of the <strong>PCA on counts</strong> plot look like?</p>
-<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span>(<span class="no">counts_prc</span>$<span class="no">rotation</span>,
-               <span class="kw">xpc</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="co"># CHANGE ME</span>
-               <span class="kw">plot_title</span> <span class="kw">=</span> <span class="st">'PCA on counts'</span>,
-               <span class="kw">color_vec</span> <span class="kw">=</span> <span class="no">zm4eq.sce</span>$<span class="no">phenoid</span>,
-               <span class="kw">color_title</span> <span class="kw">=</span> <span class="st">'Cell type'</span>,
-               <span class="kw">saveplot</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span><span class="op">(</span><span class="va">counts_prc</span><span class="op">$</span><span class="va">rotation</span>, 
+               xpc <span class="op">=</span> <span class="fl">1</span>, <span class="co"># CHANGE ME</span>
+               plot_title <span class="op">=</span> <span class="st">'PCA on counts'</span>, 
+               color_vec <span class="op">=</span> <span class="va">zm4eq.sce</span><span class="op">$</span><span class="va">phenoid</span>, 
+               color_title <span class="op">=</span> <span class="st">'Cell type'</span>, 
+               saveplot <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><img src="d_sc_example_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
-<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span>(<span class="no">logcounts_prc</span>$<span class="no">rotation</span>,
-               <span class="kw">xpc</span> <span class="kw">=</span> <span class="fl">1</span>, <span class="co"># CHANGE ME</span>
-               <span class="kw">plot_title</span> <span class="kw">=</span> <span class="st">'PCA on logcounts'</span>,
-               <span class="kw">color_vec</span> <span class="kw">=</span> <span class="no">zm4eq.sce</span>$<span class="no">phenoid</span>,
-               <span class="kw">color_title</span> <span class="kw">=</span> <span class="st">'Cell type'</span>,
-               <span class="kw">saveplot</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span><span class="op">(</span><span class="va">logcounts_prc</span><span class="op">$</span><span class="va">rotation</span>, 
+               xpc <span class="op">=</span> <span class="fl">1</span>, <span class="co"># CHANGE ME</span>
+               plot_title <span class="op">=</span> <span class="st">'PCA on logcounts'</span>, 
+               color_vec <span class="op">=</span> <span class="va">zm4eq.sce</span><span class="op">$</span><span class="va">phenoid</span>, 
+               color_title <span class="op">=</span> <span class="st">'Cell type'</span>, 
+               saveplot <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><img src="d_sc_example_files/figure-html/unnamed-chunk-10-2.png" width="700"></p>
 </div>
 <div id="interactive-example-2" class="section level3">
@@ -271,7 +285,8 @@
 <a href="#interactive-example-2" class="anchor"></a><em>Interactive example 2</em>
 </h3>
 <p>Perform the equivalent PCA without using <code>prcomp</code>.</p>
-<div class="sourceCode" id="cb19"><html><body><pre class="r"># your code here</pre></body></html></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># your code here</span></code></pre></div>
 </div>
 </div>
 <div id="visualizing-embeddings" class="section level2">
@@ -279,13 +294,14 @@
 <a href="#visualizing-embeddings" class="anchor"></a>Visualizing embeddings</h2>
 <p>While PCA enables us to find a much lower dimensional representation, even if we are interested in just using 10 PCs, that is still hard to visualize. Uniform Manifold Approximation and Projection (UMAP) is a popular and fast dimension method that can be used on embeddings to find a further reduced dimensional representation.</p>
 <p>We’ll use UMAP (<code>uwot</code>::<code>umap</code>) to improve our visualization, incorporating the first 10 components of the PCA result as performed on the logcounts:</p>
-<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">logcounts_prc_umap</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/uwot/man/umap.html">umap</a></span>(<span class="no">logcounts_prc</span>$<span class="no">rotation</span>[,<span class="fl">1</span>:<span class="fl">10</span>], <span class="kw">n_neighbors</span> <span class="kw">=</span> <span class="fl">30</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span>(<span class="no">logcounts_prc_umap</span>,
-               <span class="kw">xpc</span> <span class="kw">=</span> <span class="fl">1</span>,
-               <span class="kw">plot_title</span> <span class="kw">=</span> <span class="st">'UMAP (PCA on logcounts)'</span>,
-               <span class="kw">color_vec</span> <span class="kw">=</span> <span class="no">zm4eq.sce</span>$<span class="no">phenoid</span>,
-               <span class="kw">color_title</span> <span class="kw">=</span> <span class="st">'Cell type'</span>,
-               <span class="kw">saveplot</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">logcounts_prc_umap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/uwot/man/umap.html">umap</a></span><span class="op">(</span><span class="va">logcounts_prc</span><span class="op">$</span><span class="va">rotation</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>, n_neighbors <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span><span class="op">(</span><span class="va">logcounts_prc_umap</span>, 
+               xpc <span class="op">=</span> <span class="fl">1</span>,
+               plot_title <span class="op">=</span> <span class="st">'UMAP (PCA on logcounts)'</span>, 
+               color_vec <span class="op">=</span> <span class="va">zm4eq.sce</span><span class="op">$</span><span class="va">phenoid</span>, 
+               color_title <span class="op">=</span> <span class="st">'Cell type'</span>, 
+               saveplot <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><img src="d_sc_example_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
 <p>We can see that the cells cluster clearly by cell type.</p>
 <p>What else could we have changed here?</p>
@@ -303,49 +319,56 @@
 <p>This dataset is small compared to many that we encounter in biology. We are often interested in analyzing far more than 4,000 cells at one time. Further, we may want to incorporate more features. However, even on this small dataset, it takes a long time to run <code>prcomp</code> on the full dataset without any feature selection.</p>
 <p><strong>How can we speed this up?</strong></p>
 <p>The <code>prcomp</code> function uses an <code>svd</code> call, which by default, will compute <strong>all</strong> of the components: the number of components is the smaller dimension (number of rows or columns). We can use the <code>nv</code> (or <code>nu</code>) arguments in <code>svd</code> to control how many components are returned, but all of the components will nonetheless be computed. However, we are usually not interested in keeping all the components, so we don’t need to compute them beyond PC50. <code><a href="https://rdrr.io/pkg/irlba/man/irlba.html">irlba::irlba</a></code> uses an iterative algorithm to compute a fast approximation to singular value decomposition, and provides a much speedier alternative for when we don’t need a full decomposition.</p>
-<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">2020</span>)
-<span class="no">mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span>(<span class="fl">1</span>:<span class="fl">10</span>,<span class="fl">10000000</span>, <span class="kw">replace</span> <span class="kw">=</span> <span class="no">T</span>), <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">1000</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="no">svd_mat</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span>(<span class="no">mat</span>, <span class="kw">nv</span> <span class="kw">=</span> <span class="fl">10</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">2020</span><span class="op">)</span>
+<span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">10000000</span>, replace <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">svd_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="va">mat</span>, nv <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   7.044   0.649   3.989</code></pre>
-<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="no">irl_mat</span> <span class="kw">&lt;-</span> <span class="kw pkg">irlba</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/irlba/man/irlba.html">irlba</a></span>(<span class="no">mat</span>, <span class="kw">nv</span> <span class="kw">=</span> <span class="fl">10</span>))</pre></body></html></div>
+##   6.472   0.611   3.696</code></pre>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">irl_mat</span> <span class="op">&lt;-</span> <span class="fu">irlba</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/irlba/man/irlba.html">irlba</a></span><span class="op">(</span><span class="va">mat</span>, nv <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   2.561   0.085   1.385</code></pre>
+##   2.546   0.048   1.312</code></pre>
 <p>Since this demonstration matrix is small, both <code>irlba</code> and <code>svd</code> are fast. However, we can observe that <code>svd</code> takes substantially longer than <code>irlba</code>. As datasets scale in size, this has a big impact, and the difference in speed grows. (This difference also depends on what machine you are running on – with less compute power, the difference will be starker.)</p>
 <p>We can verify that <code>irlba</code> is giving us a good approximation of <code>svd</code>:</p>
 <p>Comparing singular values..</p>
-<div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="no">svd_mat</span>$<span class="no">d</span>[<span class="fl">1</span>:<span class="fl">10</span>]</pre></body></html></div>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">svd_mat</span><span class="op">$</span><span class="va">d</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></code></pre></div>
 <pre><code>##  [1] 17398.6832   376.8733   376.1027   375.2666   374.6135   373.9239
 ##  [7]   373.3499   372.6006   372.3420   371.8883</code></pre>
-<div class="sourceCode" id="cb27"><html><body><pre class="r"><span class="no">irl_mat</span>$<span class="no">d</span></pre></body></html></div>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">irl_mat</span><span class="op">$</span><span class="va">d</span></code></pre></div>
 <pre><code>##  [1] 17398.6832   376.8733   376.1027   375.2666   374.6135   373.9239
 ##  [7]   373.3499   372.6006   372.3417   371.8863</code></pre>
 <p>Comparing cell embeddings (right singular values; v matrix) [Note, that depending on the seed, the sign of the <code>irlba</code> output may flip sign. This generally doesn’t matter for downstream analysis, unless integrating datasets.]</p>
-<div class="sourceCode" id="cb29"><html><body><pre class="r"><span class="no">svd_mat</span>$<span class="no">v</span>[<span class="fl">1</span>:<span class="fl">5</span>, <span class="fl">1</span>:<span class="fl">5</span>]</pre></body></html></div>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">svd_mat</span><span class="op">$</span><span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
 <pre><code>##              [,1]         [,2]          [,3]          [,4]          [,5]
 ## [1,] -0.009778136  0.019108048 -1.939095e-02  0.0026076962 -0.0122338432
 ## [2,] -0.010080091  0.014660172  2.341659e-03 -0.0009068255  0.0139706781
 ## [3,] -0.009820140  0.004629647 -4.099114e-03  0.0175370979 -0.0028319681
 ## [4,] -0.009839423 -0.012709697  3.692118e-03  0.0027956347 -0.0004302772
 ## [5,] -0.010139030  0.003275806  4.090792e-05  0.0097249414  0.0084838761</code></pre>
-<div class="sourceCode" id="cb31"><html><body><pre class="r"><span class="no">irl_mat</span>$<span class="no">v</span>[<span class="fl">1</span>:<span class="fl">5</span>, <span class="fl">1</span>:<span class="fl">5</span>]</pre></body></html></div>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">irl_mat</span><span class="op">$</span><span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
 <pre><code>##              [,1]         [,2]          [,3]          [,4]          [,5]
-## [1,] -0.009778136 -0.019108048 -1.939095e-02  0.0026076962  0.0122338432
-## [2,] -0.010080091 -0.014660172  2.341659e-03 -0.0009068255 -0.0139706781
-## [3,] -0.009820140 -0.004629647 -4.099114e-03  0.0175370979  0.0028319682
-## [4,] -0.009839423  0.012709697  3.692118e-03  0.0027956347  0.0004302772
-## [5,] -0.010139030 -0.003275806  4.090792e-05  0.0097249414 -0.0084838761</code></pre>
+## [1,] -0.009778136 -0.019108048  1.939095e-02 -0.0026076962 -0.0122338432
+## [2,] -0.010080091 -0.014660172 -2.341659e-03  0.0009068255  0.0139706781
+## [3,] -0.009820140 -0.004629647  4.099114e-03 -0.0175370979 -0.0028319682
+## [4,] -0.009839423  0.012709697 -3.692118e-03 -0.0027956347 -0.0004302772
+## [5,] -0.010139030 -0.003275806 -4.090792e-05 -0.0097249414  0.0084838761</code></pre>
 <div id="interactive-example-3" class="section level3">
 <h3 class="hasAnchor">
 <a href="#interactive-example-3" class="anchor"></a><em>Interactive example 3</em>
 </h3>
 <p>As we saw above, we can achieve the same results as a <code>prcomp</code> call by using the <code>scale</code> and <code>svd</code> function. Similarly, we can substitute <code>irlba</code> for svd.</p>
 <p>Run PCA as in <code>prcomp</code> using <code>irlba</code>. Compare the runtime with the <code>prcomp</code> and <code>scale</code> + <code>svd</code> approaches above.</p>
-<div class="sourceCode" id="cb33"><html><body><pre class="r"># as in the above examples, you can use system.time() to check runtime
-# if your command is longer than 1 line, you can encase them within {},
-# then put it inside the system.time() call
-# e.g., system.time({set of commands
-#                    that take more than 1 line})</pre></body></html></div>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># as in the above examples, you can use system.time() to check runtime</span>
+<span class="co"># if your command is longer than 1 line, you can encase them within {},</span>
+<span class="co"># then put it inside the system.time() call</span>
+<span class="co"># e.g., system.time({set of commands</span>
+<span class="co">#                    that take more than 1 line})</span></code></pre></div>
 </div>
 </div>
 <div id="brief-introduction-to-correspondence-analysis" class="section level2">
@@ -356,7 +379,7 @@
 <p>Correspondence analysis is implemented in various R packages, including:</p>
 <ul>
 <li>
-<code>ade4</code>::<code>dudi.coa()</code>
+<code>ade4</code>::<code><a href="https://rdrr.io/pkg/ade4/man/dudi.coa.html">dudi.coa()</a></code>
 </li>
 <li>
 <code>made4</code>::<code>ord(type = 'coa')</code>
@@ -365,15 +388,16 @@
 <code>vegan</code>::<code>cca()</code> <em>(not to be confused with canonical correlation analysis, also abbreviated CCA)</em>
 </li>
 <li>
-<code>FactoMineR</code>::<code>CA()</code>
+<code>FactoMineR</code>::<code><a href="https://rdrr.io/pkg/FactoMineR/man/CA.html">CA()</a></code>
 </li>
 </ul>
 <p>However, these implementations are not designed for very large data, and thus are unwieldy for single-cell analysis. To enable the fast (and easy) application of COA to such datasets, we developed the <code>corral</code> package (which we’ve been using to plot embeddings, up til this point!).</p>
 <p><a href="https://www.bioconductor.org/packages/devel/bioc/html/corral.html"><img src="image/corral_sticker.png" style="width:10.0%"></a></p>
 <p><code>corral</code>::<code>corral</code> performs correspondence analysis:</p>
-<div class="sourceCode" id="cb34"><html><body><pre class="r"><span class="no">corral_time</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="no">corral_counts</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/corral/man/corral.html">corral</a></span>(<span class="no">counts_mat</span>))
-<span class="no">corral_logcounts</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/corral/man/corral.html">corral</a></span>(<span class="no">logcounts_mat</span>)
-<span class="no">corral_logcounts</span></pre></body></html></div>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">corral_time</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">corral_counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/corral/man/corral.html">corral</a></span><span class="op">(</span><span class="va">counts_mat</span><span class="op">)</span><span class="op">)</span>
+<span class="va">corral_logcounts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/corral/man/corral.html">corral</a></span><span class="op">(</span><span class="va">logcounts_mat</span><span class="op">)</span>
+<span class="va">corral_logcounts</span></code></pre></div>
 <pre><code>## corral output summary===========================================
 ##   Output "list" includes standard coordinates (SCu, SCv),
 ##   principal coordinates (PCu, PCv), &amp; SVD output (u, d, v)
@@ -383,53 +407,60 @@
 ## cumulative.Var.explained 0.13 0.17 0.19 0.20 0.20 0.21 0.21 0.22
 ## 
 ## Dimensions of output elements-----------------------------------
-##   Singular values (d) :: 10
-##   Left singular vectors &amp; coordinates (u, SCu, PCu) :: 500 10
-##   Right singular vectors &amp; coordinates (v, SCv, PCv) :: 3994 10
+##   Singular values (d) :: 30
+##   Left singular vectors &amp; coordinates (u, SCu, PCu) :: 500 30
+##   Right singular vectors &amp; coordinates (v, SCv, PCv) :: 3994 30
 ##   See corral help for details on each output element.
+##   Use plot_embedding to visualize; see docs for details.
 ## ================================================================</code></pre>
 <p>We used the <code>irlba</code> fast SVD approximation, so <code>corral</code> runs faster than <code>prcomp</code> (difference is more pronounced with less computational resources, e.g. on laptop):</p>
 <p><code>prcomp</code> runtime:</p>
-<div class="sourceCode" id="cb36"><html><body><pre class="r"><span class="no">prc_time</span></pre></body></html></div>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">prc_time</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   1.235   0.137   0.720</code></pre>
+##   1.126   0.112   0.654</code></pre>
 <p><code>corral</code> runtime:</p>
-<div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="no">corral_time</span></pre></body></html></div>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">corral_time</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   0.674   0.218   0.633</code></pre>
+##   1.545   0.440   1.182</code></pre>
 <p>Again, we can visualize the direct output from <code>corral</code>:</p>
-<div class="sourceCode" id="cb40"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span>(<span class="no">corral_counts</span>$<span class="no">v</span>,
-               <span class="kw">xpc</span> <span class="kw">=</span> <span class="fl">1</span>,
-               <span class="kw">plot_title</span> <span class="kw">=</span> <span class="st">'corral on counts'</span>,
-               <span class="kw">color_vec</span> <span class="kw">=</span> <span class="no">zm4eq.sce</span>$<span class="no">phenoid</span>,
-               <span class="kw">color_title</span> <span class="kw">=</span> <span class="st">'Cell type'</span>,
-               <span class="kw">saveplot</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span><span class="op">(</span><span class="va">corral_counts</span><span class="op">$</span><span class="va">v</span>, 
+               xpc <span class="op">=</span> <span class="fl">1</span>, 
+               plot_title <span class="op">=</span> <span class="st">'corral on counts'</span>, 
+               color_vec <span class="op">=</span> <span class="va">zm4eq.sce</span><span class="op">$</span><span class="va">phenoid</span>, 
+               color_title <span class="op">=</span> <span class="st">'Cell type'</span>, 
+               saveplot <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><img src="d_sc_example_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
-<div class="sourceCode" id="cb41"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span>(<span class="no">corral_logcounts</span>$<span class="no">v</span>,
-               <span class="kw">xpc</span> <span class="kw">=</span> <span class="fl">1</span>,
-               <span class="kw">plot_title</span> <span class="kw">=</span> <span class="st">'corral on logcounts'</span>,
-               <span class="kw">color_vec</span> <span class="kw">=</span> <span class="no">zm4eq.sce</span>$<span class="no">phenoid</span>,
-               <span class="kw">color_title</span> <span class="kw">=</span> <span class="st">'Cell type'</span>,
-               <span class="kw">saveplot</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span><span class="op">(</span><span class="va">corral_logcounts</span><span class="op">$</span><span class="va">v</span>, 
+               xpc <span class="op">=</span> <span class="fl">1</span>,
+               plot_title <span class="op">=</span> <span class="st">'corral on logcounts'</span>, 
+               color_vec <span class="op">=</span> <span class="va">zm4eq.sce</span><span class="op">$</span><span class="va">phenoid</span>, 
+               color_title <span class="op">=</span> <span class="st">'Cell type'</span>, 
+               saveplot <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><img src="d_sc_example_files/figure-html/unnamed-chunk-20-2.png" width="700"></p>
 <p>In contrast to the results from PCA, we can see that there is no arch effect in the first two PCs on the count data.</p>
 <p>We can also compute and visualize the UMAP embeddings:</p>
-<div class="sourceCode" id="cb42"><html><body><pre class="r"><span class="no">corral_counts_umap</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/uwot/man/umap.html">umap</a></span>(<span class="no">corral_counts</span>$<span class="no">v</span>, <span class="kw">n_neighbors</span> <span class="kw">=</span> <span class="fl">30</span>)
-<span class="no">corral_logcounts_umap</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/uwot/man/umap.html">umap</a></span>(<span class="no">corral_logcounts</span>$<span class="no">v</span>, <span class="kw">n_neighbors</span> <span class="kw">=</span> <span class="fl">30</span>)
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">corral_counts_umap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/uwot/man/umap.html">umap</a></span><span class="op">(</span><span class="va">corral_counts</span><span class="op">$</span><span class="va">v</span>, n_neighbors <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>
+<span class="va">corral_logcounts_umap</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/uwot/man/umap.html">umap</a></span><span class="op">(</span><span class="va">corral_logcounts</span><span class="op">$</span><span class="va">v</span>, n_neighbors <span class="op">=</span> <span class="fl">30</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span>(<span class="no">corral_counts_umap</span>,
-               <span class="kw">xpc</span> <span class="kw">=</span> <span class="fl">1</span>,
-               <span class="kw">plot_title</span> <span class="kw">=</span> <span class="st">'corral on counts'</span>,
-               <span class="kw">color_vec</span> <span class="kw">=</span> <span class="no">zm4eq.sce</span>$<span class="no">phenoid</span>,
-               <span class="kw">color_title</span> <span class="kw">=</span> <span class="st">'Cell type'</span>,
-               <span class="kw">saveplot</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span><span class="op">(</span><span class="va">corral_counts_umap</span>, 
+               xpc <span class="op">=</span> <span class="fl">1</span>, 
+               plot_title <span class="op">=</span> <span class="st">'corral on counts'</span>, 
+               color_vec <span class="op">=</span> <span class="va">zm4eq.sce</span><span class="op">$</span><span class="va">phenoid</span>, 
+               color_title <span class="op">=</span> <span class="st">'Cell type'</span>, 
+               saveplot <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><img src="d_sc_example_files/figure-html/unnamed-chunk-21-1.png" width="700"></p>
-<div class="sourceCode" id="cb43"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span>(<span class="no">corral_logcounts_umap</span>,
-               <span class="kw">xpc</span> <span class="kw">=</span> <span class="fl">1</span>,
-               <span class="kw">plot_title</span> <span class="kw">=</span> <span class="st">'corral on logcounts'</span>,
-               <span class="kw">color_vec</span> <span class="kw">=</span> <span class="no">zm4eq.sce</span>$<span class="no">phenoid</span>,
-               <span class="kw">color_title</span> <span class="kw">=</span> <span class="st">'Cell type'</span>,
-               <span class="kw">saveplot</span> <span class="kw">=</span> <span class="no">F</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span><span class="op">(</span><span class="va">corral_logcounts_umap</span>, 
+               xpc <span class="op">=</span> <span class="fl">1</span>,
+               plot_title <span class="op">=</span> <span class="st">'corral on logcounts'</span>, 
+               color_vec <span class="op">=</span> <span class="va">zm4eq.sce</span><span class="op">$</span><span class="va">phenoid</span>, 
+               color_title <span class="op">=</span> <span class="st">'Cell type'</span>, 
+               saveplot <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><img src="d_sc_example_files/figure-html/unnamed-chunk-21-2.png" width="700"></p>
 <div id="interactive-example-4" class="section level3">
 <h3 class="hasAnchor">
@@ -437,15 +468,17 @@
 </h3>
 <p>Load another scRNAseq benchmarking dataset from the <code>DuoClustering2018</code> package and compare the results from using different dimension reduction methods.</p>
 <p>We load and pull out the logcounts matrix from set up the <code>Zhengmix4uneq</code> dataset, which is similar to the one we used above except that the cells are in unbalanced groups. Instead of loading the full count matrix as we did above, we took the pre-filtered matrix (already selected the HVGs). Feel free to select a different one; find the list of options in the documentation for the <code>DuoClustering2018</code> package.</p>
-<div class="sourceCode" id="cb44"><html><body><pre class="r"><span class="no">zm4uneq</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DuoClustering2018/man/sce_full_Zhengmix.html">sce_filteredExpr10_Zhengmix4uneq</a></span>()
-<span class="no">zm4uneq_logcounts</span> <span class="kw">&lt;-</span> <span class="fu">assay</span>(<span class="no">zm4uneq</span>, <span class="st">'logcounts'</span>)</pre></body></html></div>
-<div class="sourceCode" id="cb45"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</pre></body></html></div>
-<pre><code>## R version 4.0.0 (2020-04-24)
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">zm4uneq</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/DuoClustering2018/man/sce_full_Zhengmix.html">sce_filteredExpr10_Zhengmix4uneq</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">zm4uneq_logcounts</span> <span class="op">&lt;-</span> <span class="fu">assay</span><span class="op">(</span><span class="va">zm4uneq</span>, <span class="st">'logcounts'</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code>## R version 4.1.0 (2021-05-18)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 18.04.4 LTS
+## Running under: Ubuntu 20.04.2 LTS
 ## 
 ## Matrix products: default
-## BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so
+## BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so
 ## 
 ## locale:
 ##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
@@ -456,79 +489,86 @@
 ## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
 ## 
 ## attached base packages:
-## [1] parallel  stats4    stats     graphics  grDevices utils     datasets 
-## [8] methods   base     
+## [1] stats4    stats     graphics  grDevices utils     datasets  methods  
+## [8] base     
 ## 
 ## other attached packages:
-##  [1] DuoClustering2018_1.7.0     uwot_0.1.8                 
-##  [3] ggplot2_3.3.2               corral_0.99.32             
-##  [5] SingleCellExperiment_1.11.6 SummarizedExperiment_1.19.6
-##  [7] DelayedArray_0.15.7         matrixStats_0.56.0         
-##  [9] Matrix_1.2-18               Biobase_2.49.0             
-## [11] GenomicRanges_1.41.5        GenomeInfoDb_1.25.8        
-## [13] IRanges_2.23.10             S4Vectors_0.27.12          
-## [15] BiocGenerics_0.35.4        
+##  [1] DuoClustering2018_1.11.0    uwot_0.1.10                
+##  [3] Matrix_1.3-4                ggplot2_3.3.5              
+##  [5] corral_1.3.1                SingleCellExperiment_1.15.1
+##  [7] SummarizedExperiment_1.23.1 Biobase_2.53.0             
+##  [9] GenomicRanges_1.45.0        GenomeInfoDb_1.29.3        
+## [11] IRanges_2.27.0              S4Vectors_0.31.0           
+## [13] BiocGenerics_0.39.1         MatrixGenerics_1.5.1       
+## [15] matrixStats_0.60.0         
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] bitops_1.0-6                  fs_1.4.2                     
-##  [3] bit64_0.9-7.1                 httr_1.4.1                   
-##  [5] rprojroot_1.3-2               tools_4.0.0                  
-##  [7] backports_1.1.8               R6_2.4.1                     
-##  [9] irlba_2.3.3                   DBI_1.1.0                    
-## [11] colorspace_1.4-1              withr_2.2.0                  
-## [13] tidyselect_1.1.0              gridExtra_2.3                
-## [15] curl_4.3                      bit_1.1-15.2                 
-## [17] compiler_4.0.0                desc_1.2.0                   
-## [19] labeling_0.3                  scales_1.1.1                 
-## [21] rappdirs_0.3.1                pkgdown_1.5.1                
-## [23] stringr_1.4.0                 digest_0.6.25                
-## [25] rmarkdown_2.3                 XVector_0.29.3               
-## [27] dichromat_2.0-0               pkgconfig_2.0.3              
-## [29] htmltools_0.5.0               fastmap_1.0.1                
-## [31] dbplyr_1.4.4                  maps_3.3.0                   
-## [33] rlang_0.4.7                   ggthemes_4.2.0               
-## [35] pals_1.6                      RSQLite_2.2.0                
-## [37] FNN_1.1.3                     shiny_1.5.0                  
-## [39] farver_2.0.3                  generics_0.0.2               
-## [41] mclust_5.4.6                  dplyr_1.0.0                  
-## [43] RCurl_1.98-1.2                magrittr_1.5                 
-## [45] GenomeInfoDbData_1.2.3        transport_0.12-2             
-## [47] Rcpp_1.0.5                    munsell_0.5.0                
-## [49] viridis_0.5.1                 lifecycle_0.2.0              
-## [51] stringi_1.4.6                 yaml_2.2.1                   
-## [53] MASS_7.3-51.6                 zlibbioc_1.35.0              
-## [55] plyr_1.8.6                    BiocFileCache_1.13.0         
-## [57] AnnotationHub_2.21.1          grid_4.0.0                   
-## [59] blob_1.2.1                    promises_1.1.1               
-## [61] ExperimentHub_1.15.0          crayon_1.3.4                 
-## [63] lattice_0.20-41               mapproj_1.2.7                
-## [65] knitr_1.29                    pillar_1.4.6                 
-## [67] reshape2_1.4.4                glue_1.4.1                   
-## [69] BiocVersion_3.12.0            evaluate_0.14                
-## [71] data.table_1.12.8             BiocManager_1.30.10          
-## [73] MultiAssayExperiment_1.15.2   httpuv_1.5.4                 
-## [75] vctrs_0.3.2                   gtable_0.3.0                 
-## [77] purrr_0.3.4                   tidyr_1.1.0                  
-## [79] assertthat_0.2.1              xfun_0.15                    
-## [81] mime_0.9                      xtable_1.8-4                 
-## [83] RSpectra_0.16-0               later_1.1.0.1                
-## [85] viridisLite_0.3.0             tibble_3.0.3                 
-## [87] AnnotationDbi_1.51.1          memoise_1.1.0                
-## [89] interactiveDisplayBase_1.27.5 ellipsis_0.3.1</code></pre>
+##   [1] colorspace_2.0-2              ellipsis_0.3.2               
+##   [3] mclust_5.4.7                  rprojroot_2.0.2              
+##   [5] XVector_0.33.0                fs_1.5.0                     
+##   [7] dichromat_2.0-0               farver_2.1.0                 
+##   [9] MultiAssayExperiment_1.19.5   bit64_4.0.5                  
+##  [11] RSpectra_0.16-0               interactiveDisplayBase_1.31.2
+##  [13] AnnotationDbi_1.55.1          fansi_0.5.0                  
+##  [15] cachem_1.0.5                  knitr_1.33                   
+##  [17] jsonlite_1.7.2                dbplyr_2.1.1                 
+##  [19] png_0.1-7                     shiny_1.6.0                  
+##  [21] BiocManager_1.30.16           mapproj_1.2.7                
+##  [23] compiler_4.1.0                httr_1.4.2                   
+##  [25] assertthat_0.2.1              fastmap_1.1.0                
+##  [27] later_1.2.0                   htmltools_0.5.1.1            
+##  [29] tools_4.1.0                   gtable_0.3.0                 
+##  [31] glue_1.4.2                    GenomeInfoDbData_1.2.6       
+##  [33] reshape2_1.4.4                dplyr_1.0.7                  
+##  [35] ggthemes_4.2.4                maps_3.3.0                   
+##  [37] rappdirs_0.3.3                Rcpp_1.0.7                   
+##  [39] jquerylib_0.1.4               pkgdown_1.6.1                
+##  [41] vctrs_0.3.8                   Biostrings_2.61.1            
+##  [43] ExperimentHub_2.1.4           xfun_0.24                    
+##  [45] stringr_1.4.0                 mime_0.11                    
+##  [47] lifecycle_1.0.0               irlba_2.3.3                  
+##  [49] AnnotationHub_3.1.4           zlibbioc_1.39.0              
+##  [51] scales_1.1.1                  ragg_1.1.3                   
+##  [53] promises_1.2.0.1              yaml_2.2.1                   
+##  [55] curl_4.3.2                    memoise_2.0.0                
+##  [57] gridExtra_2.3                 sass_0.4.0                   
+##  [59] stringi_1.7.3                 RSQLite_2.2.7                
+##  [61] BiocVersion_3.14.0            highr_0.9                    
+##  [63] desc_1.3.0                    filelock_1.0.2               
+##  [65] pals_1.7                      rlang_0.4.11                 
+##  [67] pkgconfig_2.0.3               systemfonts_1.0.2            
+##  [69] bitops_1.0-7                  evaluate_0.14                
+##  [71] lattice_0.20-44               purrr_0.3.4                  
+##  [73] labeling_0.4.2                transport_0.12-2             
+##  [75] bit_4.0.4                     tidyselect_1.1.1             
+##  [77] plyr_1.8.6                    magrittr_2.0.1               
+##  [79] R6_2.5.0                      generics_0.1.0               
+##  [81] DelayedArray_0.19.1           DBI_1.1.1                    
+##  [83] pillar_1.6.2                  withr_2.4.2                  
+##  [85] KEGGREST_1.33.0               RCurl_1.98-1.3               
+##  [87] tibble_3.1.3                  crayon_1.4.1                 
+##  [89] utf8_1.2.2                    BiocFileCache_2.1.1          
+##  [91] rmarkdown_2.9                 viridis_0.6.1                
+##  [93] grid_4.1.0                    data.table_1.14.0            
+##  [95] blob_1.2.2                    FNN_1.1.3                    
+##  [97] digest_0.6.27                 xtable_1.8-4                 
+##  [99] tidyr_1.1.3                   httpuv_1.6.1                 
+## [101] textshaping_0.3.5             munsell_0.5.0                
+## [103] viridisLite_0.4.0             bslib_0.2.5.1</code></pre>
 </div>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<div id="refs" class="references">
-<div id="ref-zmdata">
-<p>Duò, A, MD Robinson, and C Soneson. n.d. “A Systematic Performance Evaluation of Clustering Methods for Single-Cell Rna-Seq Data [Version 2; Peer Review: 2 Approved], Journal = F1000Research, Volume = 7, Year = 2018, Number = 1141, Doi = 10.12688/f1000research.15666.2.”</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-zmdata" class="csl-entry">
+Duò, A, MD Robinson, and C Soneson. n.d. <span>“A Systematic Performance Evaluation of Clustering Methods for Single-Cell RNA-Seq Data [Version 2; Peer Review: 2 Approved], JOURNAL = <span>F1000Research</span>, VOLUME = <span>7</span>, YEAR = <span>2018</span>, NUMBER = <span>1141</span>, DOI = <span class="nocase">10.12688/f1000research.15666.2</span>.”</span>
 </div>
-<div id="ref-frontiers">
-<p>Hsu, Lauren L., and Aedin C. Culhane. 2020. “Impact of Data Preprocessing on Integrative Matrix Factorization of Single Cell Data.” <em>Frontiers in Oncology</em> 10: 973. <a href="https://doi.org/10.3389/fonc.2020.00973">https://doi.org/10.3389/fonc.2020.00973</a>.</p>
+<div id="ref-frontiers" class="csl-entry">
+Hsu, Lauren L., and Aedin C. Culhane. 2020. <span>“Impact of Data Preprocessing on Integrative Matrix Factorization of Single Cell Data.”</span> <em>Frontiers in Oncology</em> 10: 973. <a href="https://doi.org/10.3389/fonc.2020.00973">https://doi.org/10.3389/fonc.2020.00973</a>.
 </div>
-<div id="ref-zheng">
-<p>Zheng, Grace X. Y., Jessica M. Terry, Phillip Belgrader, Paul Ryvkin, Zachary W. Bent, Ryan Wilson, Solongo B. Ziraldo, et al. 2017. “Massively Parallel Digital Transcriptional Profiling of Single Cells.” <em>Nature Communications</em> 8 (1): 14049. <a href="https://doi.org/10.1038/ncomms14049">https://doi.org/10.1038/ncomms14049</a>.</p>
+<div id="ref-zheng" class="csl-entry">
+Zheng, Grace X. Y., Jessica M. Terry, Phillip Belgrader, Paul Ryvkin, Zachary W. Bent, Ryan Wilson, Solongo B. Ziraldo, et al. 2017. <span>“Massively Parallel Digital Transcriptional Profiling of Single Cells.”</span> <em>Nature Communications</em> 8 (1): 14049. <a href="https://doi.org/10.1038/ncomms14049">https://doi.org/10.1038/ncomms14049</a>.
 </div>
 </div>
 </div>
@@ -549,7 +589,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
