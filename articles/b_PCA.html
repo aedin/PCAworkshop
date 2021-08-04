@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Principal Component Analysis in R • PCAworkshop</title>
+<title>Principal Component Analysis in R; PCA of covariance or correlation matrix • PCAworkshop</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Principal Component Analysis in R">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Principal Component Analysis in R; PCA of covariance or correlation matrix">
 <meta property="og:description" content="PCAworkshop">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -60,10 +60,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/a_Intro.html">A short PCA vignette - Wine Example</a>
+      <a href="../articles/a_Intro.html">A short vignette; SVD and PCA</a>
     </li>
     <li>
-      <a href="../articles/b_PCA.html">Principal Component Analysis in R</a>
+      <a href="../articles/b_PCA.html">Principal Component Analysis in R; PCA of covariance or correlation matrix</a>
     </li>
     <li>
       <a href="../articles/c_COA.html">Correspondence Analysis in R</a>
@@ -94,7 +94,7 @@
       </header><script src="b_PCA_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Principal Component Analysis in R</h1>
+      <h1 data-toc-skip>Principal Component Analysis in R; PCA of covariance or correlation matrix</h1>
                         <h4 class="author">Aedin Culhane</h4>
             
             <h4 class="date">July 15, 2021</h4>
@@ -106,12 +106,12 @@
 
     
     
-<div id="necessary-r-libraries" class="section level3">
+<div id="r-libraries" class="section level3">
 <h3 class="hasAnchor">
-<a href="#necessary-r-libraries" class="anchor"></a>Necessary R libraries</h3>
+<a href="#r-libraries" class="anchor"></a>R libraries</h3>
+<p>Install, if necessary, and load necessary libraries and set up R session. If you are running the docker container or using an instance on the orchestra platform, then you should have these libraries installed already.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Install, if necessary, and load necessary libraries and set up R session</span>
-<span class="co">#if (!requireNamespace("BiocManager", quietly = TRUE)) #install.packages("BiocManager")</span>
+<code class="sourceCode R"><span class="co">#if (!requireNamespace("BiocManager", quietly = TRUE)) #install.packages("BiocManager")</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org">magrittr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://pbil.univ-lyon1.fr/ADE-4/">ade4</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://factominer.free.fr">FactoMineR</a></span><span class="op">)</span>
@@ -134,13 +134,8 @@
 <li>
 <code><a href="https://rdrr.io/pkg/ade4/man/dudi.pca.html">dudi.pca()</a></code> (<code>ade4</code>)</li>
 </ul>
-<p><strong>Note, although <code>prcomp</code> sets <code>scale=FALSE</code> for consistency with S, in general scaling is advised. We will demonstrate first pca of unscaled and then scaled data. Scaling scaled the variables to have unit variance and is advised before analysis takes place.</strong></p>
-<p>We will demonstrate some of these and explore these using exploR</p>
-</div>
-<div id="equivalents-across-methods" class="section level1">
-<h1 class="hasAnchor">
-<a href="#equivalents-across-methods" class="anchor"></a>Equivalents across methods</h1>
-<p>Give an input matrix P and result res</p>
+<p><strong>Note, although <code>prcomp</code> sets <code>scale=FALSE</code> for consistency with S, in general scaling is advised. We will demonstrate both prcomp of unscaled and scaled data. Scaling the variables to have unit variance is advised.</strong></p>
+<p>Give an input matrix, P and a resulting output, res</p>
 <table class="table">
 <thead><tr class="header">
 <th align="left">Function</th>
@@ -179,10 +174,10 @@
 <p>With <code><a href="https://rdrr.io/pkg/ade4/man/dudi.pca.html">ade4::dudi.pca</a></code> and <code>prcomp</code> the default is <code>center = TRUE, scale = TRUE</code>.</p>
 <p>With <code>princomp</code>, <code>cor=FALSE</code> is the default.</p>
 </div>
-<div id="create-a-simple-toy-dataset" class="section level1">
+<div id="a-simple-toy-dataset" class="section level1">
 <h1 class="hasAnchor">
-<a href="#create-a-simple-toy-dataset" class="anchor"></a>Create a simple toy dataset</h1>
-<p>Create a cloud of points; two vectors, x,y of length 100.</p>
+<a href="#a-simple-toy-dataset" class="anchor"></a>A simple toy dataset</h1>
+<p>We will demonstrate some of these and how the methods relate but first we will create a simple minimal cloud of points; two vectors, x,y of length 100.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"> <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>             <span class="co">#sets the seed for random number generation.</span>
  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">100</span>              <span class="co">#creates a vector x with numbers from 1 to 100</span>
@@ -208,129 +203,176 @@
  <span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">P</span><span class="op">$</span><span class="va">x_obs</span><span class="op">)</span>
  <span class="fu"><a href="https://rdrr.io/r/graphics/hist.html">hist</a></span><span class="op">(</span><span class="va">P</span><span class="op">$</span><span class="va">y_obs</span><span class="op">)</span></code></pre></div>
 <p><img src="b_PCA_files/figure-html/unnamed-chunk-2-1.png" width="1000"></p>
-<p>Plot x,y. Place an “orange” point at the center (<code><a href="https://rdrr.io/r/base/mean.html">mean(x)</a></code>, <code><a href="https://rdrr.io/r/base/mean.html">mean(y)</a></code>) on plot</p>
+</div>
+<div id="difference-between-covariance-based-and-correlation-based-pca" class="section level1">
+<h1 class="hasAnchor">
+<a href="#difference-between-covariance-based-and-correlation-based-pca" class="anchor"></a>Difference between covariance-based and correlation-based PCA</h1>
+<p>When performing PCA, you will encounter, two forms of PCA; PCA of a covariance or correlation matrix.</p>
+<p>The difference between these is can be most easily understood in the data pre-processing. In the first vignette in this package, PCA was computed as a singular value decomposition (SVD) of a column centered, scaled matrix. This was PCA of the correlation matrix. If the matrix is centered but not scaled, it is PCA of the covariance matrix.</p>
+<ul>
+<li>PCA of a correlation matrix = svd of <strong>scaled</strong>, centered, matrix (z-score matrix)</li>
+</ul>
+</div>
+<div id="covariance-based-pca" class="section level1">
+<h1 class="hasAnchor">
+<a href="#covariance-based-pca" class="anchor"></a>covariance-based PCA</h1>
+<p>PCA of a covariance matrix can be computed as svd of <strong>unscaled</strong>, centered, matrix</p>
+<ol style="list-style-type: decimal">
+<li>Center a matrix Recall we had two vector x_obs, y_obs. We can center these columns by subtracting the column mean from each object in the column. We can perform PCA of the covariance matrix is several ways.</li>
+</ol>
+<ul>
+<li><p>SVD of the centered matrix</p></li>
+<li><p>eigenanalysis of the centered, covariance matrix</p></li>
+<li><p>using prcomp with scale=FALSE (which is the default)</p></li>
+</ul>
+<div id="svd-of-centered-data-" class="section level2">
+<h2 class="hasAnchor">
+<a href="#svd-of-centered-data-" class="anchor"></a>svd of centered data.</h2>
+<p><span class="math display">\[\$d\]</span> returns the singular values, not the eigenvalues.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">P</span>,asp<span class="op">=</span><span class="fl">1</span>,col<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="co">#plot points</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x_obs</span><span class="op">)</span>,y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_obs</span><span class="op">)</span>,col<span class="op">=</span><span class="st">"orange"</span>, pch<span class="op">=</span><span class="fl">19</span><span class="op">)</span> <span class="co">#show center</span></code></pre></div>
-<p><img src="b_PCA_files/figure-html/unnamed-chunk-3-1.png" width="1000"></p>
-</div>
-<div id="computing-via-svd-of-unscaled-centered-covariance-matrix" class="section level1">
-<h1 class="hasAnchor">
-<a href="#computing-via-svd-of-unscaled-centered-covariance-matrix" class="anchor"></a>Computing via svd of <strong>unscaled</strong>, centered, covariance matrix</h1>
-<p>PCA can be computed as a singular value decomposition of a column centered matrix. Therefore we first processs the matrix. In this example, we don’t scale. This is not advised.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#center matrix</span>
-<span class="va">M</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">x_obs</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x_obs</span><span class="op">)</span>,<span class="va">y_obs</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_obs</span><span class="op">)</span><span class="op">)</span>
-<span class="va">Mx</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">P</span>, center<span class="op">=</span><span class="cn">TRUE</span>,scale<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<p>M equal to Mx, ignore col names</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html">all.equal</a></span><span class="op">(</span><span class="va">M</span>, <span class="va">Mx</span>, check.attributes<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>  </code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-</div>
-<div id="eigenvector-eigenvalues-of-the-centered-covariance-matrix" class="section level1">
-<h1 class="hasAnchor">
-<a href="#eigenvector-eigenvalues-of-the-centered-covariance-matrix" class="anchor"></a>Eigenvector, Eigenvalues of the centered, covariance matrix</h1>
-<p>The eigenvectors of the covariance matrix provide the principal axes, and the eigenvalues quantify the fraction of variance explained in each component.</p>
-<p>creates covariance matrix</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">MCov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cov</a></span><span class="op">(</span><span class="va">M</span><span class="op">)</span> </code></pre></div>
-<p>compute eigen values and vectors</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">eigenvalues</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/eigen.html">eigen</a></span><span class="op">(</span><span class="va">MCov</span><span class="op">)</span><span class="op">$</span><span class="va">values</span>       
-<span class="va">eigenvalues</span></code></pre></div>
+<code class="sourceCode R"><span class="va">Mx</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">P</span>, center<span class="op">=</span><span class="cn">TRUE</span>, scale<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="va">Mx</span><span class="op">)</span><span class="op">$</span><span class="va">d</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">Mx</span><span class="op">)</span><span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span></code></pre></div>
 <pre><code>## [1] 4110.45 1189.45</code></pre>
-<p>(This is the same as <code>prcomp</code> PCA of the unscaled data)</p>
+</div>
+<div id="eigen-on-a-covariance-matrix" class="section level2">
+<h2 class="hasAnchor">
+<a href="#eigen-on-a-covariance-matrix" class="anchor"></a>Eigen on a covariance matrix</h2>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">MCov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/cor.html">cov</a></span><span class="op">(</span><span class="va">Mx</span><span class="op">)</span> 
+<span class="fu"><a href="https://rdrr.io/r/base/eigen.html">eigen</a></span><span class="op">(</span><span class="va">MCov</span><span class="op">)</span>       </code></pre></div>
+<pre><code>## eigen() decomposition
+## $values
+## [1] 4110.45 1189.45
+## 
+## $vectors
+##           [,1]       [,2]
+## [1,] 0.4527354 -0.8916449
+## [2,] 0.8916449  0.4527354</code></pre>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">eigenvalues</span> <span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/eigen.html">eigen</a></span><span class="op">(</span><span class="va">MCov</span><span class="op">)</span><span class="op">$</span><span class="va">values</span>
+<span class="va">eigenVectors</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/eigen.html">eigen</a></span><span class="op">(</span><span class="va">MCov</span><span class="op">)</span><span class="op">$</span><span class="va">vectors</span></code></pre></div>
+</div>
+<div id="prcomp" class="section level2">
+<h2 class="hasAnchor">
+<a href="#prcomp" class="anchor"></a>prcomp</h2>
+<p>This is the same as <code>prcomp</code> PCA of the unscaled data. By default prcomp will perform decomposition of data that is centered but not scaled (center = TRUE, scale = FALSE)</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html">prcomp</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span></code></pre></div>
+<pre><code>## Standard deviations (1, .., p=2):
+## [1] 64.11279 34.48841
+## 
+## Rotation (n x k) = (2 x 2):
+##             PC1        PC2
+## x_obs 0.4527354 -0.8916449
+## y_obs 0.8916449  0.4527354</code></pre>
+<p>Note that the eigenvalues are provided as;</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html">prcomp</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span> </code></pre></div>
 <pre><code>## [1] 4110.45 1189.45</code></pre>
-<p>and similar to <code>princomp</code></p>
+<p>and this is also similar to <code>princomp</code></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/princomp.html">princomp</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span>   </code></pre></div>
 <pre><code>##   Comp.1   Comp.2 
 ## 4069.345 1177.556</code></pre>
+<p>eigenvector from the eigenanalysis of the covariance matrix equal the rotation matrix of prcomp.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">eigenVectors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/eigen.html">eigen</a></span><span class="op">(</span><span class="va">MCov</span><span class="op">)</span><span class="op">$</span><span class="va">vectors</span>     
-<span class="va">eigenVectors</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="st">"$v right singular vectors of svd of centered matrix"</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] "$v right singular vectors of svd of centered matrix"</code></pre>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="va">Mx</span><span class="op">)</span><span class="op">$</span><span class="va">v</span></code></pre></div>
 <pre><code>##           [,1]       [,2]
 ## [1,] 0.4527354 -0.8916449
 ## [2,] 0.8916449  0.4527354</code></pre>
-<p>which is equivalent to</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="st">"eigen of covariance matrix"</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] "eigen of covariance matrix"</code></pre>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/eigen.html">eigen</a></span><span class="op">(</span><span class="va">MCov</span><span class="op">)</span><span class="op">$</span><span class="va">vectors</span>  </code></pre></div>
+<pre><code>##           [,1]       [,2]
+## [1,] 0.4527354 -0.8916449
+## [2,] 0.8916449  0.4527354</code></pre>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="st">"prcomp of centered but not scaled (default options) matrix"</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] "prcomp of centered but not scaled (default options) matrix"</code></pre>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html">prcomp</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span><span class="op">$</span><span class="va">rotation</span></code></pre></div>
 <pre><code>##             PC1        PC2
 ## x_obs 0.4527354 -0.8916449
 ## y_obs 0.8916449  0.4527354</code></pre>
 <p>The right singular vectors are the eigenvectors of M<sup>t</sup>M. Next I plot the principal axes (yellow):</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">P</span>,asp<span class="op">=</span><span class="fl">1</span>,col<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="co">#plot points</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x_obs</span><span class="op">)</span>,y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_obs</span><span class="op">)</span>,col<span class="op">=</span><span class="st">"orange"</span>, pch<span class="op">=</span><span class="fl">19</span><span class="op">)</span> <span class="co">#show center</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_obs</span>,<span class="va">eigenVectors</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">]</span><span class="op">/</span><span class="va">eigenVectors</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">]</span><span class="op">*</span><span class="va">M</span><span class="op">[</span><span class="va">x</span><span class="op">]</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_obs</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">8</span><span class="op">)</span></code></pre></div>
-<p><img src="b_PCA_files/figure-html/unnamed-chunk-12-1.png" width="1000"></p>
+<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_obs</span>,<span class="va">eigenVectors</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">]</span><span class="op">/</span><span class="va">eigenVectors</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">]</span><span class="op">*</span><span class="va">Mx</span><span class="op">[</span><span class="va">x</span><span class="op">]</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_obs</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">8</span><span class="op">)</span></code></pre></div>
+<p><img src="b_PCA_files/figure-html/unnamed-chunk-11-1.png" width="1000"></p>
 <p>This shows the first principal axis. Note that it passes through the mean as expected. The ratio of the eigenvectors gives the slope of the axis.</p>
 <p>Next plot the second principal axis, orthogonal to the first</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">P</span>,asp<span class="op">=</span><span class="fl">1</span>,col<span class="op">=</span><span class="fl">1</span><span class="op">)</span> <span class="co">#plot points</span>
 <span class="fu"><a href="https://rdrr.io/r/graphics/points.html">points</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x_obs</span><span class="op">)</span>,y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_obs</span><span class="op">)</span>,col<span class="op">=</span><span class="st">"orange"</span>, pch<span class="op">=</span><span class="fl">19</span><span class="op">)</span> <span class="co">#show center</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_obs</span>,<span class="va">eigenVectors</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">]</span><span class="op">/</span><span class="va">eigenVectors</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">]</span><span class="op">*</span><span class="va">M</span><span class="op">[</span><span class="va">x</span><span class="op">]</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_obs</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">8</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_obs</span>,<span class="va">eigenVectors</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span><span class="op">/</span><span class="va">eigenVectors</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="va">M</span><span class="op">[</span><span class="va">x</span><span class="op">]</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_obs</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">8</span><span class="op">)</span></code></pre></div>
-<p><img src="b_PCA_files/figure-html/unnamed-chunk-13-1.png" width="1000"> shows the second principal axis, which is orthogonal to the first (recall that the matrix V<sup>t</sup> in the singular value decomposition is orthogonal). This can be checked by noting that the second principal axis is also, as the product of orthogonal slopes is -1.</p>
-<div id="pca-scaled-data-using-singular-value-decomposition-svd" class="section level2">
+<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_obs</span>,<span class="va">eigenVectors</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">]</span><span class="op">/</span><span class="va">eigenVectors</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">]</span><span class="op">*</span><span class="va">Mx</span><span class="op">[</span><span class="va">x</span><span class="op">]</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_obs</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">8</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">x_obs</span>,<span class="va">eigenVectors</span><span class="op">[</span><span class="fl">2</span>,<span class="fl">2</span><span class="op">]</span><span class="op">/</span><span class="va">eigenVectors</span><span class="op">[</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">]</span><span class="op">*</span><span class="va">Mx</span><span class="op">[</span><span class="va">x</span><span class="op">]</span><span class="op">+</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y_obs</span><span class="op">)</span>,col<span class="op">=</span><span class="fl">8</span><span class="op">)</span></code></pre></div>
+<p><img src="b_PCA_files/figure-html/unnamed-chunk-12-1.png" width="1000"> shows the second principal axis, which is orthogonal to the first (recall that the matrix V<sup>t</sup> in the singular value decomposition is orthogonal). This can be checked by noting that the second principal axis is also, as the product of orthogonal slopes is -1.</p>
+</div>
+</div>
+<div id="correlation-based-pca" class="section level1">
+<h1 class="hasAnchor">
+<a href="#correlation-based-pca" class="anchor"></a>Correlation-based PCA</h1>
+<p>Correlation-based PCA can be computed by singular value decomposition (svd) of centered and scaled matrix. So we can repeat the code above but <strong>scale</strong> and <strong>center</strong> the data with <code><a href="https://rdrr.io/r/base/scale.html">scale(P, center=TRUE, scale=TRUE)</a></code>. By default scale will center and scale</p>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">scale</span></code></pre></div>
+<pre><code>## function (x, center = TRUE, scale = TRUE) 
+## UseMethod("scale")
+## &lt;bytecode: 0x5558b2d38688&gt;
+## &lt;environment: namespace:base&gt;</code></pre>
+<div id="svd-of-z-score-scaled-data-" class="section level2">
 <h2 class="hasAnchor">
-<a href="#pca-scaled-data-using-singular-value-decomposition-svd" class="anchor"></a>PCA (scaled data) using Singular value decomposition (svd)</h2>
-<p>Given a matrix X of dimension n × p, SVD decomposes it to:</p>
-<p><span class="math display">\[M = U D V^{t}\]</span></p>
-<p>U,V define the left and right singular values</p>
-<p>U and V are square orthogonal:</p>
-<p><span class="math display">\[UU^{t} = I_{p}\]</span> <span class="math display">\[VV^{t} = I_{n}\]</span></p>
-<p>The output is</p>
-<p>d - a vector containing the singular values u - the left singular vectors v - the right singular vectors of x</p>
-<p>Relating to <code>prcomp</code>;</p>
-<p>The columns u from the SVD correspond to the principal components x in the PCA.</p>
-<p>Furthermore, the matrix v from the SVD is equivalent to the rotation matrix returned by prcomp.</p>
-<p>Now repeat the code above but <strong>scale</strong> and <strong>center</strong> the data with <code><a href="https://rdrr.io/r/base/scale.html">scale(P, center=TRUE, scale=TRUE)</a></code>.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/any.html">any</a></span><span class="op">(</span><span class="va">M</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span><span class="op">)</span>  <span class="co">#FALSE</span></code></pre></div>
-<pre><code>## [1] FALSE</code></pre>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">P</span>, center<span class="op">=</span><span class="cn">TRUE</span>, scale<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span><span class="op">)</span> <span class="co">#TRUE</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div id="scalep-centertrue-scaletrue" class="section level3">
-<h3 class="hasAnchor">
-<a href="#scalep-centertrue-scaletrue" class="anchor"></a><code>scale(P, center=TRUE, scale=TRUE)</code>
-</h3>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<a href="#svd-of-z-score-scaled-data-" class="anchor"></a>svd of z-score scaled data.</h2>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p0</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span><span class="op">)</span>
-
-<span class="va">p0</span><span class="op">$</span><span class="va">d</span>          <span class="co">#the singular values</span></code></pre></div>
+<span class="va">p0</span><span class="op">$</span><span class="va">d</span>         <span class="co">#the singular values</span></code></pre></div>
 <pre><code>## [1] 12.065827  7.239877</code></pre>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">p0</span><span class="op">$</span><span class="va">v</span>          <span class="co">#the right singular vectors</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">p0</span><span class="op">$</span><span class="va">v</span>        <span class="co">#the right singular vectors</span></code></pre></div>
 <pre><code>##           [,1]       [,2]
 ## [1,] 0.7071068 -0.7071068
 ## [2,] 0.7071068  0.7071068</code></pre>
-<p>The eigenvalues are</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="va">p0</span><span class="op">$</span><span class="va">d</span><span class="op">)</span></code></pre></div>
-<pre><code>##          [,1]     [,2]
-## [1,] 12.06583 0.000000
-## [2,]  0.00000 7.239877</code></pre>
-<p>Which is</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">p0</span><span class="op">$</span><span class="va">u</span><span class="op">)</span> <span class="op">%*%</span> <span class="va">M</span> <span class="op">%*%</span> <span class="va">p0</span><span class="op">$</span><span class="va">v</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 612.6218 367.5924</code></pre>
-<p>Eigenvalues from svd on the scaled data. The diagonal elements of d from the SVD are proportional to the standard deviations (<code>sdev</code>) returned by PCA.</p>
-<p>The elements of d are formed by taking the sum of the squares of the principal components but not dividing by the sample size.</p>
-<p>Therefore we can devide by the sample size, which is either the ncol or nrow of the matrix -1.</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<p>Recall, SVD returns a list with components</p>
+<p>d = a vector containing the singular values of x, of length min(n, p), in descending order</p>
+<p>u = a matrix whose columns contain the left singular vectors of x, present if nu &gt; 0. Dimension c(n, nu).</p>
+<p>v = a matrix whose columns contain the right singular vectors of x, present if nv &gt; 0. Dimension c(p, nv).</p>
+<p>where the product of these matrix <span class="math display">\[X = U D V'\]</span> recovers the original matrix;</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="op">(</span><span class="va">p0</span><span class="op">$</span><span class="va">u</span> <span class="op">%*%</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="va">p0</span><span class="op">$</span><span class="va">d</span><span class="op">)</span> <span class="op">%*%</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">p0</span><span class="op">$</span><span class="va">v</span><span class="op">)</span><span class="op">)</span><span class="op">%&gt;%</span> <span class="va">head</span></code></pre></div>
+<pre><code>##             [,1]       [,2]
+## [1,] -1.78511160 -1.1414577
+## [2,] -0.99401402 -1.5197211
+## [3,]  0.02497959 -1.7769963
+## [4,] -1.87979464 -1.9636443
+## [5,] -1.11114369 -1.9868817
+## [6,] -0.93661695 -0.4798394</code></pre>
+<p>which equals the scaled matrix that was decomposed using svd</p>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span><span class="op">%&gt;%</span> <span class="va">head</span></code></pre></div>
+<pre><code>##            x_obs      y_obs
+## [1,] -1.78511160 -1.1414577
+## [2,] -0.99401402 -1.5197211
+## [3,]  0.02497959 -1.7769963
+## [4,] -1.87979464 -1.9636443
+## [5,] -1.11114369 -1.9868817
+## [6,] -0.93661695 -0.4798394</code></pre>
+<p>The elements of d are formed by taking the sum of the squares of the principal components but not dividing by the rank. Therefore we can divide by the rank, which is user-defined or min of the ncol or nrow of the matrix -1.</p>
+<p>The diagonal elements of d from the SVD are proportional to the standard deviations (<code>sdev</code>) returned by PCA.</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p0</span><span class="op">$</span><span class="va">d</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">p0</span><span class="op">$</span><span class="va">u</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 1.4705472 0.5294528</code></pre>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eigenValues</span><span class="op">=</span> <span class="va">p0</span><span class="op">$</span><span class="va">d</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">p0</span><span class="op">$</span><span class="va">u</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span>
 <span class="va">eigenValues</span></code></pre></div>
 <pre><code>## [1] 1.4705472 0.5294528</code></pre>
-<p>Summary of eigs</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">eigSummary</span><span class="op">&lt;-</span><span class="kw">function</span><span class="op">(</span><span class="va">svdRes</span>,<span class="va">sf</span><span class="op">=</span><span class="fl">4</span><span class="op">)</span><span class="op">{</span>
+<p>Summary of output from svd</p>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">svdSummary</span><span class="op">&lt;-</span><span class="kw">function</span><span class="op">(</span><span class="va">svdRes</span>,<span class="va">sf</span><span class="op">=</span><span class="fl">4</span><span class="op">)</span><span class="op">{</span>
   <span class="kw">if</span><span class="op">(</span><span class="fu">is</span><span class="op">(</span><span class="va">svdRes</span>,<span class="st">"prcomp"</span><span class="op">)</span><span class="op">)</span><span class="op">{</span>
     <span class="va">eigenvalue</span><span class="op">=</span><span class="va">svdRes</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span>
   <span class="op">}</span><span class="kw">else</span><span class="op">{</span>
@@ -345,61 +387,32 @@
 <span class="op">}</span>
 
 
-<span class="va">eigSum.svd</span> <span class="op">&lt;-</span><span class="fu">eigSummary</span><span class="op">(</span><span class="va">p0</span><span class="op">)</span>
+<span class="va">eigSum.svd</span> <span class="op">&lt;-</span><span class="fu">svdSummary</span><span class="op">(</span><span class="va">p0</span><span class="op">)</span>
 <span class="va">eigSum.svd</span> </code></pre></div>
 <pre><code>##   eigenvalues     sd variance.percent cumulative.variance.percent
 ## 1       1.471  1.213              74%                         74%
 ## 2      0.5295 0.7276              26%                        100%</code></pre>
 </div>
-</div>
-<div id="demonstrating-x-u-d-v" class="section level2">
+<div id="prcomp-scale-true" class="section level2">
 <h2 class="hasAnchor">
-<a href="#demonstrating-x-u-d-v" class="anchor"></a>Demonstrating X = U D V’</h2>
-<p>SVD returns a list with components</p>
-<p>d = a vector containing the singular values of x, of length min(n, p), in descending order</p>
-<p>u = a matrix whose columns contain the left singular vectors of x, present if nu &gt; 0. Dimension c(n, nu).</p>
-<p>v = a matrix whose columns contain the right singular vectors of x, present if nv &gt; 0. Dimension c(p, nv).</p>
-<p>The product of these matrix X = U D V’ recovers the original matrix;</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">p0</span><span class="op">$</span><span class="va">u</span> <span class="op">%*%</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span><span class="va">p0</span><span class="op">$</span><span class="va">d</span><span class="op">)</span> <span class="op">%*%</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">p0</span><span class="op">$</span><span class="va">v</span><span class="op">)</span><span class="op">)</span><span class="op">%&gt;%</span> <span class="va">head</span></code></pre></div>
-<pre><code>##             [,1]       [,2]
-## [1,] -1.78511160 -1.1414577
-## [2,] -0.99401402 -1.5197211
-## [3,]  0.02497959 -1.7769963
-## [4,] -1.87979464 -1.9636443
-## [5,] -1.11114369 -1.9868817
-## [6,] -0.93661695 -0.4798394</code></pre>
-<p>which equals the scaled matrix that was decomposed using svd</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span><span class="op">%&gt;%</span> <span class="va">head</span></code></pre></div>
-<pre><code>##            x_obs      y_obs
-## [1,] -1.78511160 -1.1414577
-## [2,] -0.99401402 -1.5197211
-## [3,]  0.02497959 -1.7769963
-## [4,] -1.87979464 -1.9636443
-## [5,] -1.11114369 -1.9868817
-## [6,] -0.93661695 -0.4798394</code></pre>
-</div>
-<div id="comparing-to-prcomp" class="section level2">
-<h2 class="hasAnchor">
-<a href="#comparing-to-prcomp" class="anchor"></a>Comparing to prcomp</h2>
+<a href="#prcomp-scale-true" class="anchor"></a>prcomp (scale = TRUE)</h2>
 <p>First <code><a href="https://rdrr.io/r/stats/prcomp.html">stats::prcomp</a></code>. The eigenvectors are stored in <code>$rotation</code>. Note these are the same as <code>svd$v</code> on scale data</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html">prcomp</a></span><span class="op">(</span><span class="va">P</span>, scale <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">p1</span><span class="op">$</span><span class="va">rotation</span></code></pre></div>
 <pre><code>##             PC1        PC2
 ## x_obs 0.7071068 -0.7071068
 ## y_obs 0.7071068  0.7071068</code></pre>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"> <span class="op">(</span><span class="va">p1</span><span class="op">$</span><span class="va">rotation</span><span class="op">==</span> <span class="va">p0</span><span class="op">$</span><span class="va">v</span><span class="op">)</span></code></pre></div>
 <pre><code>##        PC1  PC2
 ## x_obs TRUE TRUE
 ## y_obs TRUE TRUE</code></pre>
 <p>eigenvalues - <code>$sdev</code> eigenvector - <code>$rotation</code></p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">p1</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "sdev"     "rotation" "center"   "scale"    "x"</code></pre>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">p1</span><span class="op">)</span></code></pre></div>
 <pre><code>## Importance of components:
 ##                           PC1    PC2
@@ -407,7 +420,7 @@
 ## Proportion of Variance 0.7353 0.2647
 ## Cumulative Proportion  0.7353 1.0000</code></pre>
 <p>To calculated eigenvalues information manually here is the code;</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sf</span><span class="op">=</span><span class="fl">4</span>
 <span class="va">eigs</span><span class="op">=</span> <span class="va">p1</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span>
 <span class="va">eigSum.pca</span><span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>
@@ -420,38 +433,40 @@
 <pre><code>##      eigenvalue       sd variance.percent cumulative.variance.percent
 ## [1,]  1.4705472 1.212661        0.7352736                   0.7352736
 ## [2,]  0.5294528 0.727635        0.2647264                   1.0000000</code></pre>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/identical.html">identical</a></span><span class="op">(</span><span class="va">eigSum.svd</span>,<span class="va">eigSum.pca</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] FALSE</code></pre>
+<p>which is the same as;</p>
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">eigSum.svd</span></code></pre></div>
+<pre><code>##   eigenvalues     sd variance.percent cumulative.variance.percent
+## 1       1.471  1.213              74%                         74%
+## 2      0.5295 0.7276              26%                        100%</code></pre>
 <p>If we had more components, we could generate a scree plot. Its not very useful with 2 components, but here is the code</p>
 <p>Caculate the Proportion of Variance explained by each component (eig sum Proportion above)</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ProportionVariance</span> <span class="op">=</span> <span class="va">p0</span><span class="op">$</span><span class="va">d</span><span class="op">^</span><span class="fl">2</span> <span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">p0</span><span class="op">$</span><span class="va">d</span><span class="op">^</span><span class="fl">2</span> <span class="op">)</span>
 <span class="va">ProportionVariance</span></code></pre></div>
 <pre><code>## [1] 0.7352736 0.2647264</code></pre>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">ProportionVariance</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"b"</span>, pch <span class="op">=</span> <span class="fl">16</span>, xlab <span class="op">=</span> <span class="st">"principal components"</span>, 
     ylab <span class="op">=</span> <span class="st">"variance explained"</span><span class="op">)</span></code></pre></div>
-<p><img src="b_PCA_files/figure-html/unnamed-chunk-29-1.png" width="1000"></p>
+<p><img src="b_PCA_files/figure-html/unnamed-chunk-26-1.png" width="1000"></p>
 </div>
-</div>
-<div id="princomp" class="section level1">
-<h1 class="hasAnchor">
+<div id="princomp" class="section level2">
+<h2 class="hasAnchor">
 <a href="#princomp" class="anchor"></a><code>princomp</code>
-</h1>
+</h2>
 <p><code>princomp</code> was written for compatiblity with S-PLUS however it is not recommended. Its is better to use prcomp or svd. That is because by default <code>princomp</code> performs a decompostion of the covariance not correlation matrix. <code>princomp</code> can call <code>eigen</code> on the correlation or covariance matrix. Its default calculation uses divisor N for the covariance matrix.</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p2</span><span class="op">&lt;-</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/princomp.html">princomp</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span>
 <span class="va">p2</span><span class="op">$</span><span class="va">sd</span><span class="op">^</span><span class="fl">2</span></code></pre></div>
 <pre><code>##   Comp.1   Comp.2 
 ## 4069.345 1177.556</code></pre>
 <p>sqrt of eigenvalues</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p2</span><span class="op">$</span><span class="va">sdev</span></code></pre></div>
 <pre><code>##   Comp.1   Comp.2 
 ## 63.79142 34.31553</code></pre>
 <p>eigenvectors</p>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p2</span><span class="op">$</span><span class="va">loadings</span></code></pre></div>
 <pre><code>## 
 ## Loadings:
@@ -463,18 +478,18 @@
 ## SS loadings       1.0    1.0
 ## Proportion Var    0.5    0.5
 ## Cumulative Var    0.5    1.0</code></pre>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">p2</span><span class="op">$</span><span class="va">scores</span>,<span class="fl">2</span><span class="op">)</span></code></pre></div>
 <pre><code>##         Comp.1     Comp.2
 ## [1,] -94.48864 -36.682917
 ## [2,] -99.33030   3.293649</code></pre>
-<p>Set <code>cor = TRUE</code> in your call to princomp in order to perform PCA on the correlation matrix (instead of the covariance matrix)</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<p>Set <code>cor = TRUE</code> in the call to princomp in order to perform PCA on the correlation matrix (instead of the covariance matrix)</p>
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p2b</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/stats/princomp.html">princomp</a></span><span class="op">(</span><span class="va">P</span>, cor <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">p2b</span><span class="op">$</span><span class="va">sdev</span><span class="op">^</span><span class="fl">2</span></code></pre></div>
 <pre><code>##    Comp.1    Comp.2 
 ## 1.4705472 0.5294528</code></pre>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p2b</span><span class="op">$</span><span class="va">loadings</span></code></pre></div>
 <pre><code>## 
 ## Loadings:
@@ -487,36 +502,34 @@
 ## Proportion Var    0.5    0.5
 ## Cumulative Var    0.5    1.0</code></pre>
 <p>For more info on <code>prcomp</code> v <code>princomp</code> see <a href="http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/118-principal-component-analysis-in-r-prcomp-vs-princomp/" class="uri">http://www.sthda.com/english/articles/31-principal-component-methods-in-r-practical-guide/118-principal-component-analysis-in-r-prcomp-vs-princomp/</a></p>
+</div>
 <div id="factominer" class="section level2">
 <h2 class="hasAnchor">
 <a href="#factominer" class="anchor"></a><code>FactoMineR</code>
 </h2>
 <p><code><a href="https://rdrr.io/pkg/FactoMineR/man/PCA.html">FactoMineR::PCA</a></code> calls svd to compute the PCA</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p3</span><span class="op">&lt;-</span><span class="fu">FactoMineR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/FactoMineR/man/PCA.html">PCA</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span></code></pre></div>
 <p>The eigenvalues, same as <code>eigSum</code> and <code>eigSum.svd</code> above</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">p3</span><span class="op">$</span><span class="va">eig</span><span class="op">)</span></code></pre></div>
 <pre><code>##                                      comp 1      comp 2
 ## eigenvalue                         1.470547   0.5294528
 ## percentage of variance            73.527362  26.4726382
 ## cumulative percentage of variance 73.527362 100.0000000</code></pre>
-</div>
-</div>
-<div id="correlations-between-variables-and-pcs" class="section level1">
-<h1 class="hasAnchor">
-<a href="#correlations-between-variables-and-pcs" class="anchor"></a>correlations between variables and PCs</h1>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<p>correlations between variables and PCs</p>
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p3</span><span class="op">$</span><span class="va">var</span><span class="op">$</span><span class="va">coord</span>  </code></pre></div>
 <pre><code>##          Dim.1      Dim.2
 ## x_obs 0.857481  0.5145157
 ## y_obs 0.857481 -0.5145157</code></pre>
+</div>
 <div id="ade4dudi-pca" class="section level2">
 <h2 class="hasAnchor">
 <a href="#ade4dudi-pca" class="anchor"></a><code>ade4::dudi.pca</code>
 </h2>
 <p>First <code><a href="https://rdrr.io/pkg/ade4/man/dudi.pca.html">ade4::dudi.pca</a></code> scales the data and stores the scaled data in <code>$tab</code>. In PCA this will be almost equivalent to scale. However there is a minor difference (see <a href="https://pbil.univ-lyon1.fr/R/pdf/course2.pdf" class="uri">https://pbil.univ-lyon1.fr/R/pdf/course2.pdf</a>). <code>ade4</code> uses the duality diagram framework for computing pca and other matrix factorizations (so it provides <code>lw</code> and <code>cw</code> which are the row and columns weights, respectively). See Cruz and Holmes 2011 for a wonderful tutorial on the duality diagram framework <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3265363/" class="uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3265363/</a></p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p4</span><span class="op">&lt;-</span><span class="fu">ade4</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/ade4/man/dudi.pca.html">dudi.pca</a></span><span class="op">(</span><span class="va">P</span>, scannf <span class="op">=</span> <span class="cn">FALSE</span>, nf<span class="op">=</span><span class="fl">2</span><span class="op">)</span>  <span class="co"># save 2 axis by default,</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">p4</span><span class="op">$</span><span class="va">tab</span><span class="op">)</span>  <span class="co"># centered/scaled data. </span></code></pre></div>
 <pre><code>##         x_obs      y_obs
@@ -526,7 +539,7 @@
 ## 4 -1.88926469 -1.9735368
 ## 5 -1.11674143 -1.9968913
 ## 6 -0.94133545 -0.4822568</code></pre>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##            x_obs      y_obs
 ## [1,] -1.78511160 -1.1414577
@@ -536,16 +549,16 @@
 ## [5,] -1.11114369 -1.9868817
 ## [6,] -0.93661695 -0.4798394</code></pre>
 <p>The values used for centering are stored in <code>cent</code>, it is equal to the <code>colMeans</code>. <code>norm</code> provides the sd of the columns</p>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p4</span><span class="op">$</span><span class="va">cent</span> <span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span></code></pre></div>
 <pre><code>## x_obs y_obs 
 ##  TRUE  TRUE</code></pre>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sd.n</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/cor.html">var</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/identical.html">identical</a></span><span class="op">(</span><span class="va">p4</span><span class="op">$</span><span class="va">norm</span>,<span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">P</span>, <span class="fl">2</span>, <span class="va">sd.n</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 <p>The summary printout is equivalent to P3 (<code>p3$eig</code>) above. The eigenvales are stored in <code>p4$eig</code>.</p>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">p4</span><span class="op">)</span></code></pre></div>
 <pre><code>## Class: pca dudi
 ## Call: ade4::dudi.pca(df = P, scannf = FALSE, nf = 2)
@@ -563,82 +576,59 @@
 ## Cumulative projected inertia (%):
 ##     Ax1   Ax1:2 
 ##   73.53  100.00</code></pre>
-<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p4</span><span class="op">$</span><span class="va">eig</span></code></pre></div>
 <pre><code>## [1] 1.4705472 0.5294528</code></pre>
-<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p4</span><span class="op">$</span><span class="va">c1</span></code></pre></div>
 <pre><code>##             CS1        CS2
 ## x_obs 0.7071068 -0.7071068
 ## y_obs 0.7071068  0.7071068</code></pre>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p4</span><span class="op">$</span><span class="va">co</span></code></pre></div>
 <pre><code>##          Comp1      Comp2
 ## x_obs 0.857481 -0.5145157
 ## y_obs 0.857481  0.5145157</code></pre>
 <p>The cumulative % of variance explained by each component:</p>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">*</span> <span class="va">p4</span><span class="op">$</span><span class="va">eig</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">p4</span><span class="op">$</span><span class="va">eig</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 73.52736 26.47264</code></pre>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span><span class="op">(</span><span class="va">k</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1]  73.52736 100.00000</code></pre>
 <p><code>nf</code> is an integer giving the number of axes kept. <code>nf</code> will always be smaller than the smaller of: the number of rows or number of columns of the matrix; minus 1.</p>
-<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p4</span><span class="op">$</span><span class="va">nf</span></code></pre></div>
 <pre><code>## [1] 2</code></pre>
 <p><code>c1</code> gives the variables’ coordinates, normed to 1. It is also called the coefficients of the combination or the loadings of variables.</p>
 <p>Equally, the output matrix <code>l1</code> gives the individuals’ coordinates, normed to 1. It is also called the loadings of individuals.</p>
-<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p4</span><span class="op">$</span><span class="va">c1</span></code></pre></div>
 <pre><code>##             CS1        CS2
 ## x_obs 0.7071068 -0.7071068
 ## y_obs 0.7071068  0.7071068</code></pre>
-<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">p4</span><span class="op">$</span><span class="va">cw</span> <span class="op">*</span> <span class="va">p4</span><span class="op">$</span><span class="va">c1</span><span class="op">$</span><span class="va">CS1</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 1</code></pre>
 <p><code>co</code> gives the variables’ coordinates, normed to the square root of the eigenvalues.</p>
-<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p4</span><span class="op">$</span><span class="va">co</span></code></pre></div>
 <pre><code>##          Comp1      Comp2
 ## x_obs 0.857481 -0.5145157
 ## y_obs 0.857481  0.5145157</code></pre>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">p4</span><span class="op">$</span><span class="va">cw</span> <span class="op">*</span> <span class="va">p4</span><span class="op">$</span><span class="va">co</span><span class="op">$</span><span class="va">Comp1</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 1.470547</code></pre>
 <p>The link between <code>c1</code> and <code>co</code> is defined by:</p>
-<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p4</span><span class="op">$</span><span class="va">c1</span><span class="op">$</span><span class="va">CS1</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">sqrt</a></span><span class="op">(</span><span class="va">p4</span><span class="op">$</span><span class="va">eig</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 0.857481 0.857481</code></pre>
 </div>
-</div>
-<div id="z-score-normalization" class="section level1">
-<h1 class="hasAnchor">
-<a href="#z-score-normalization" class="anchor"></a>Z-score normalization</h1>
-<p>The default version of scale is a z-score standarization</p>
-<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">zscore</span><span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">(</span><span class="va">x</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="va">PZ</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">P</span>,<span class="fl">2</span>, <span class="va">zscore</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="va">PZ</span><span class="op">==</span> <span class="fu"><a href="https://rdrr.io/r/base/scale.html">scale</a></span><span class="op">(</span><span class="va">P</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>mean<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colMeans</a></span><span class="op">(</span><span class="va">PZ</span><span class="op">)</span><span class="op">)</span>, sd<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">PZ</span>,<span class="fl">2</span>, <span class="va">sd</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##       mean sd
-## x_obs    0  1
-## y_obs    0  1</code></pre>
-<p>Then by extension, a P0, svd of a scaled matrix is the same as svd of a z-score matrix</p>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">pz</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="va">PZ</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="va">pz</span><span class="op">$</span><span class="va">v</span> <span class="op">==</span> <span class="va">p0</span><span class="op">$</span><span class="va">v</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] TRUE</code></pre>
-<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="va">pzEigs</span><span class="op">&lt;-</span><span class="va">pz</span><span class="op">$</span><span class="va">d</span><span class="op">^</span><span class="fl">2</span><span class="op">/</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">pz</span><span class="op">$</span><span class="va">u</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span> <span class="op">==</span><span class="va">eigs</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] FALSE</code></pre>
-<div id="comparision-of-results-of-different-methods" class="section level2">
+<div id="comparision-of-results-of-these-different-pca-methods" class="section level2">
 <h2 class="hasAnchor">
-<a href="#comparision-of-results-of-different-methods" class="anchor"></a>Comparision of results of different methods</h2>
+<a href="#comparision-of-results-of-these-different-pca-methods" class="anchor"></a>Comparision of results of these different PCA methods</h2>
 <p>There is also a nice package called <code>factoextra</code>. This works all of the above classes</p>
-<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.sthda.com/english/rpkgs/factoextra">factoextra</a></span><span class="op">)</span>
 
 <span class="va">res</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">p0</span>,<span class="va">p1</span>,<span class="va">p2</span>,<span class="va">p2b</span>,<span class="va">p3</span>,<span class="va">p4</span><span class="op">)</span> 
@@ -767,15 +757,15 @@
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co">#if(!"explor" %in% rownames(installed.packages()))    #devtools::install_github("juba/explor")</span>
 
 <span class="co">#if(!"scatterD3" %in% rownames(installed.packages())) </span>
 <span class="co">#devtools::install_github("juba/scatterD3")</span></code></pre></div>
-<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="va"><a href="https://juba.github.io/explor/">explor</a></span><span class="op">)</span>
 <span class="fu">explor</span><span class="fu">::</span><span class="fu"><a href="https://juba.github.io/explor//reference/explor.html">explor</a></span><span class="op">(</span><span class="va">p4</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">children</span><span class="op">)</span>
 <span class="va">res.ca</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/FactoMineR/man/CA.html">CA</a></span><span class="op">(</span><span class="va">children</span>, row.sup <span class="op">=</span> <span class="fl">15</span><span class="op">:</span><span class="fl">18</span>, col.sup <span class="op">=</span> <span class="fl">6</span><span class="op">:</span><span class="fl">8</span><span class="op">)</span>
 <span class="fu"><a href="https://juba.github.io/explor//reference/explor.html">explor</a></span><span class="op">(</span><span class="va">res.ca</span><span class="op">)</span></code></pre></div>
@@ -784,45 +774,45 @@
 <a href="#factoextra" class="anchor"></a><code>factoextra</code>
 </h2>
 <p>Plotting using <code>factoextra</code></p>
-<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.sthda.com/english/rpkgs/factoextra">factoextra</a></span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/factoextra/man/eigenvalue.html">fviz_eig</a></span><span class="op">(</span><span class="va">p1</span><span class="op">)</span></code></pre></div>
-<p><img src="b_PCA_files/figure-html/unnamed-chunk-54-1.png" width="1000"></p>
-<div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
+<p><img src="b_PCA_files/figure-html/unnamed-chunk-49-1.png" width="1000"></p>
+<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/factoextra/man/fviz_pca.html">fviz_pca_var</a></span><span class="op">(</span><span class="va">p1</span>,
              col.var <span class="op">=</span> <span class="st">"contrib"</span>, <span class="co"># Color by contributions to the PC</span>
              gradient.cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#00AFBB"</span>, <span class="st">"#E7B800"</span>, <span class="st">"#FC4E07"</span><span class="op">)</span>,
              repel <span class="op">=</span> <span class="cn">TRUE</span>     <span class="co"># Avoid text overlapping</span>
              <span class="op">)</span></code></pre></div>
-<p><img src="b_PCA_files/figure-html/unnamed-chunk-55-1.png" width="1000"></p>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<p><img src="b_PCA_files/figure-html/unnamed-chunk-50-1.png" width="1000"></p>
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/factoextra/man/fviz_pca.html">fviz_pca_biplot</a></span><span class="op">(</span><span class="va">p1</span>, repel <span class="op">=</span> <span class="cn">TRUE</span>,
                 col.var <span class="op">=</span> <span class="st">"#2E9FDF"</span>, <span class="co"># Variables color</span>
                 col.ind <span class="op">=</span> <span class="st">"#696969"</span>  <span class="co"># Individuals color</span>
                 <span class="op">)</span></code></pre></div>
-<p><img src="b_PCA_files/figure-html/unnamed-chunk-56-1.png" width="1000"></p>
+<p><img src="b_PCA_files/figure-html/unnamed-chunk-51-1.png" width="1000"></p>
 </div>
 </div>
 <div id="drawing-ellispe" class="section level1">
 <h1 class="hasAnchor">
 <a href="#drawing-ellispe" class="anchor"></a>Drawing Ellispe</h1>
 <p>Example using iris dataset</p>
-<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span>
 <span class="va">ir.pca</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/stats/prcomp.html">prcomp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">iris</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span>, center<span class="op">=</span><span class="cn">TRUE</span>, scale<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>Easiest approach:</p>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sinhrks/ggfortify">ggfortify</a></span><span class="op">)</span>
 <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">ir.pca</span>, data<span class="op">=</span><span class="va">iris</span>, colour<span class="op">=</span><span class="st">"Species"</span>, frame<span class="op">=</span><span class="cn">TRUE</span>, frame.type<span class="op">=</span><span class="st">"t"</span><span class="op">)</span> </code></pre></div>
-<p><img src="b_PCA_files/figure-html/unnamed-chunk-58-1.png" width="1000"></p>
-<div class="sourceCode" id="cb127"><pre class="downlit sourceCode r">
+<p><img src="b_PCA_files/figure-html/unnamed-chunk-53-1.png" width="1000"></p>
+<div class="sourceCode" id="cb121"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">ir.pca</span>,<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">PC1</span>, <span class="va">PC2</span><span class="op">)</span><span class="op">)</span><span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density_2d.html">stat_density_2d</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>alpha<span class="op">=</span><span class="va">..level..</span>, fill<span class="op">=</span><span class="va">iris</span><span class="op">$</span><span class="va">Species</span><span class="op">)</span>, bins<span class="op">=</span><span class="fl">4</span>, geom<span class="op">=</span><span class="st">"polygon"</span><span class="op">)</span></code></pre></div>
-<p><img src="b_PCA_files/figure-html/unnamed-chunk-59-1.png" width="1000"></p>
+<p><img src="b_PCA_files/figure-html/unnamed-chunk-54-1.png" width="1000"></p>
 <p><code><a href="https://ggplot2.tidyverse.org/reference/stat_ellipse.html">stat_ellipse()</a></code> and <code><a href="https://ggplot2.tidyverse.org/reference/geom_density_2d.html">stat_density_2d()</a></code> have a lot of options. See manual pages</p>
 <p>multivariate normal distribution.</p>
 <pre><code><a href="https://ggplot2.tidyverse.org/reference/stat_ellipse.html">stat_ellipse(type = "norm", linetype = 2)  </a></code></pre>
@@ -830,7 +820,7 @@
 <pre><code><a href="https://ggplot2.tidyverse.org/reference/stat_ellipse.html">stat_ellipse(type = "euclid", level = 3) </a></code></pre>
 <p>multivariate t-distribution</p>
 <pre><code><a href="https://ggplot2.tidyverse.org/reference/stat_ellipse.html">stat_ellipse(type = "t") </a></code></pre>
-<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb125"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.1.0 (2021-05-18)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
@@ -861,7 +851,7 @@
 ## [10] ggrepel_0.9.1        pillar_1.6.2         backports_1.2.1     
 ## [13] lattice_0.20-44      glue_1.4.2           digest_0.6.27       
 ## [16] ggsignif_0.6.2       colorspace_2.0-2     htmltools_0.5.1.1   
-## [19] pkgconfig_2.0.3      broom_0.7.9          haven_2.4.2         
+## [19] pkgconfig_2.0.3      broom_0.7.9          haven_2.4.3         
 ## [22] purrr_0.3.4          scales_1.1.1         openxlsx_4.2.4      
 ## [25] rio_0.5.27           tibble_3.1.3         generics_0.1.0      
 ## [28] farver_2.1.0         car_3.0-11           ellipsis_0.3.2      

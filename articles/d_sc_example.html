@@ -60,10 +60,10 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/a_Intro.html">A short PCA vignette - Wine Example</a>
+      <a href="../articles/a_Intro.html">A short vignette; SVD and PCA</a>
     </li>
     <li>
-      <a href="../articles/b_PCA.html">Principal Component Analysis in R</a>
+      <a href="../articles/b_PCA.html">Principal Component Analysis in R; PCA of covariance or correlation matrix</a>
     </li>
     <li>
       <a href="../articles/c_COA.html">Correspondence Analysis in R</a>
@@ -324,11 +324,11 @@
 <span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">10000000</span>, replace <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">svd_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/svd.html">svd</a></span><span class="op">(</span><span class="va">mat</span>, nv <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   6.472   0.611   3.696</code></pre>
+##   8.153   0.776   4.606</code></pre>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">irl_mat</span> <span class="op">&lt;-</span> <span class="fu">irlba</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/irlba/man/irlba.html">irlba</a></span><span class="op">(</span><span class="va">mat</span>, nv <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   2.546   0.048   1.312</code></pre>
+##   3.510   0.056   1.802</code></pre>
 <p>Since this demonstration matrix is small, both <code>irlba</code> and <code>svd</code> are fast. However, we can observe that <code>svd</code> takes substantially longer than <code>irlba</code>. As datasets scale in size, this has a big impact, and the difference in speed grows. (This difference also depends on what machine you are running on – with less compute power, the difference will be starker.)</p>
 <p>We can verify that <code>irlba</code> is giving us a good approximation of <code>svd</code>:</p>
 <p>Comparing singular values..</p>
@@ -352,11 +352,11 @@
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">irl_mat</span><span class="op">$</span><span class="va">v</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
 <pre><code>##              [,1]         [,2]          [,3]          [,4]          [,5]
-## [1,] -0.009778136 -0.019108048  1.939095e-02 -0.0026076962 -0.0122338432
-## [2,] -0.010080091 -0.014660172 -2.341659e-03  0.0009068255  0.0139706781
-## [3,] -0.009820140 -0.004629647  4.099114e-03 -0.0175370979 -0.0028319682
-## [4,] -0.009839423  0.012709697 -3.692118e-03 -0.0027956347 -0.0004302772
-## [5,] -0.010139030 -0.003275806 -4.090792e-05 -0.0097249414  0.0084838761</code></pre>
+## [1,] -0.009778136 -0.019108048 -1.939095e-02  0.0026076962  0.0122338432
+## [2,] -0.010080091 -0.014660172  2.341659e-03 -0.0009068255 -0.0139706781
+## [3,] -0.009820140 -0.004629647 -4.099114e-03  0.0175370979  0.0028319682
+## [4,] -0.009839423  0.012709697  3.692118e-03  0.0027956347  0.0004302772
+## [5,] -0.010139030 -0.003275806  4.090792e-05  0.0097249414 -0.0084838761</code></pre>
 <div id="interactive-example-3" class="section level3">
 <h3 class="hasAnchor">
 <a href="#interactive-example-3" class="anchor"></a><em>Interactive example 3</em>
@@ -418,12 +418,12 @@
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">prc_time</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   1.126   0.112   0.654</code></pre>
+##   1.281   0.164   0.765</code></pre>
 <p><code>corral</code> runtime:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">corral_time</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   1.545   0.440   1.182</code></pre>
+##   1.775   0.424   1.287</code></pre>
 <p>Again, we can visualize the direct output from <code>corral</code>:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/corral/man/plot_embedding.html">plot_embedding</a></span><span class="op">(</span><span class="va">corral_counts</span><span class="op">$</span><span class="va">v</span>, 
@@ -499,7 +499,7 @@
 ##  [7] SummarizedExperiment_1.23.1 Biobase_2.53.0             
 ##  [9] GenomicRanges_1.45.0        GenomeInfoDb_1.29.3        
 ## [11] IRanges_2.27.0              S4Vectors_0.31.0           
-## [13] BiocGenerics_0.39.1         MatrixGenerics_1.5.1       
+## [13] BiocGenerics_0.39.1         MatrixGenerics_1.5.2       
 ## [15] matrixStats_0.60.0         
 ## 
 ## loaded via a namespace (and not attached):
