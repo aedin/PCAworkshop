@@ -102,46 +102,7 @@ There are 3 clusters and 2 batches
 table(pheno$clust, pheno$batch)
 ```
 
-# COA Background
-
-So what does correspondence analysis do and how is it related to decomposition of the Pearson residuals? 
-
-As mentioned above a critical step in decomposition is choosing the form of the data that makes more sense. SVD will detect linear vectors that can the most variance in the data.  So if the variance is skewed or varies with the mean, it needs normalization.  
-
-I will describe it in two ways, you could consider the expected value of an element ($X_{ij}$) in a matrix N to be the product of its row ($r_i$) and column ($c_j$) weight, where the row weight is the $\frac{rowsum}{total sum}$ and thus represents the contribution of that row to the total matrix. Equally, the column weight is the $\frac{colsum}{total sum}$, and is the contribution of that column to the total.  Sometimes the row and column weight are called the row and column mass respectively. The expected weight of every element is the outer product of the row and column weights 
-
-In COA, the data are treated like a contingency table so the residuals are the difference between the observed data and the expected, under the assumption that there is no relationship. The Pearson $\chi^2$ statistic is: $$\frac{observed-expected}{\sqrt{expected}}$$ The $\chi^2$ transformed matrix is then decomposed with SVD.
-
-```{r coa, echo=FALSE, fig.cap="COA", out.width = '100%'}
-knitr::include_graphics("./image/coa.png")
-```
-
-A much more detailed explanation of correspondence analysis is provided at: https://www.displayr.com/math-correspondence-analysis/
-
-## Expected matrix
-
-The input matrix must be positive count data.
-
-The expected value for each element of the matrix is the product of the row and column weight.  This can be easily calculated
-
-```{r}
-rw<-rowSums(mat)/sum(mat) # row weights
-cw<-colSums(mat)/sum(mat)  # column weights
-expectedValues<- outer(cw, rw)
-#dim(expw)
-expectedValues[1:2,1:3]
-
-```
-
-Objective values
-
-```{r}
-mat[1:3,1:3]
-```
-Therefore the $\chi^2$ transformed matrix is just as stated above: $\frac{observed-expected}{\sqrt{expected}}$
-
-
-## PCA of toy data (for comparison)
+## PCA of toy data (to enable comparison of methods)
 For comparison we will include a PCA of the 150 cases which form 3 clusters
 
 ```{r}
@@ -170,7 +131,7 @@ ggplot2::autoplot(pca1,
 
 
 
-## Singular Value Decomposition (svd, irbla)
+## PCA, Singular Value Decomposition 
 
 PCA is computed by an Singular Value Decomposition (svd) of a centered or centered and scaled matrix to compute PCA of the covariance or correlation matrix. SVD can be considered a generalization of eigenvalue decomposition. In eigenvalue decomposition the D matrix is required to be square. 
 
@@ -197,8 +158,8 @@ round(cor(svd1$u, pca1$x))
 ```
 
 
-## irlba
-`irlba` is a fast and memory-efficient way to compute a partial SVD and it often used in scRNAseq application.
+## Faster Singular Value Decomposition with irlba
+The Implicitly restarted Lanczos bidiagonalization algorithm (IRLBA) available in the R package `irlba` is a fast and memory-efficient way to compute an approximate or partial SVD and it often used in scRNAseq application.It finds a few approximate largest (or, optionally, smallest) singular values and corresponding singular vectors of a sparse or dense matrix using a method of Baglama and Reichel (2005).
 
 When running `irlba`, you need to define the number of Lanczos iterations (iter) carried out. 
 ```{r}
@@ -210,104 +171,162 @@ round(cor(svd1$u, svd2$u))
 ```
 ```{r}
 par(mfrow=c(1,2))
-plot(svd1$u[,1], svd2$u[,1])
-plot(svd1$u[,2], svd2$u[,2])
+plot(svd1$u[,1], svd2$u[,1], xlab="svd PC1", ylab="irlba, PC1")
+plot(svd1$u[,2], svd2$u[,2], xlab="svd PC2", ylab="irlba, PC2")
 ```
 
-## COA using the ade4 function. dudi.coa
+
+# COA and Pearson residuals
+
+So what does correspondence analysis do and how is it related to decomposition of the Pearson residuals? 
+
+As mentioned above a critical step in decomposition is choosing the form of the data that makes more sense. SVD will detect linear vectors that can the most variance in the data.  So if the variance is skewed or varies with the mean, it needs normalization.  
+
+I will describe it in two ways, you could consider the expected value of an element ($X_{ij}$) in a matrix N to be the product of its row ($r_i$) and column ($c_j$) weight, where the row weight is the $\frac{rowsum}{total sum}$ and thus represents the contribution of that row to the total matrix. Equally, the column weight is the $\frac{colsum}{total sum}$, and is the contribution of that column to the total.  Sometimes the row and column weight are called the row and column mass respectively. The expected weight of every element is the outer product of the row and column weights 
+
+In COA, the data are treated like a contingency table so the residuals are the difference between the observed data and the expected, under the assumption that there is no relationship. The Pearson $\chi^2$ statistic is: $$\frac{observed-expected}{\sqrt{expected}}$$ The $\chi^2$ transformed matrix is then decomposed with SVD.
+
+```{r coa, echo=FALSE, fig.cap="COA", out.width = '100%'}
+knitr::include_graphics("./image/coa.png")
+```
+
+A much more detailed explanation of correspondence analysis is provided at: https://www.displayr.com/math-correspondence-analysis/
+
+### Observed, Expected matrix
+
+The input matrix must be positive count data.
+
+The expected value for each element of the matrix is the product of the row and column weight.  This can be easily calculated
+
+```{r}
+rw<-rowSums(mat)/sum(mat) # row weights
+cw<-colSums(mat)/sum(mat)  # column weights
+expectedValues<- outer(cw, rw)
+#dim(expw)
+expectedValues[1:2,1:3]
+
+```
+
+Actual (observed) values
+
+```{r}
+mat[1:3,1:3]
+```
+Therefore the $\chi^2$ transformed matrix is just as stated above: $\frac{observed-expected}{\sqrt{expected}}$
+
+
+# COA implementations in R
+COA has been implement in numberous R packages, including;  
+
+ca (ca)
+CA (FactoMineR)
+dudi.coa (ade4)
+cca (vegan)
+corresp (MASS)
+ord (made4)
+
+
+I will compare a few approaches.
+
+## COA: the ade4 function. dudi.coa
 Correspondence analysis is implemented in `ade4` (and `made4` extends `ade4`). The implementation of Correspondence analysis in `ade4` is slower than `corral` (see below), so is not recommended for running COA on scRNAseq.  However this is a small dataset, far smaller than a typical scRNAseq data.
 
 The `ade4` package provides COA in the function `dudi.coa`.  In the French school, dudi refers to duality diagram (Benzécri, 1973; Holmes, 2008), which is central to the a geometric school of matrix factorization. 
 
 ```{r}
 
-coa1<-ade4::dudi.coa(mat,scannf = FALSE, n=2)
-summary(coa1)
+coa_ade4<-ade4::dudi.coa(mat,scannf = FALSE, n=2)
+summary(coa_ade4)
 ```
 
 The resulting row and column scores and coordinates are in the objects `li`, `co`, `l1`, `c1`, where l here refers to  "lignes" or rows, and c is columns.
 
 ```{}
-coa1$li  #Row coordinates dims =c(4989,10)
-coa1$co  #Col coordinates dims=c(150,10)
-coa1$l1  #Row scores dims =c(4989,10)
-coa1$c1  #Col scores dims=c(150,10)
+coa_ade4$li  #Row coordinates dims =c(4989,10)
+coa_ade4$co  #Col coordinates dims=c(150,10)
+coa_ade4$l1  #Row scores dims =c(4989,10)
+coa_ade4$c1  #Col scores dims=c(150,10)
 ```
 
 ```{r}
-sapply(list(li=coa1$li,  l1=coa1$l1, co=coa1$co, c1=coa1$c1), dim)
+sapply(list(li=coa_ade4$li,  l1=coa_ade4$l1, co=coa_ade4$co, c1=coa_ade4$c1), dim)
 ```
+
+```{r}
+plot(coa_ade4$co[,1], coa_ade4$co[,2], col=pheno$clust, pch=19, xlab="coa_ade4, PC1", ylab="coa_ade4, PC2")
+```
+
+
+### Visualization of results with explor
 
 Results of `ade4` matrix factorization can be interactively explored using `explor`, by default it plots COA results in the biplot, because the features (genes) and cases are on the same scale.  
 
 The coordinates are in the object co and it can be seen that COA separates by cell cluster. `explor` creates  plots using `scatterD3::scatterD3` which creates interactive scatter plot based on d3.js. 
 ```{r, eval=FALSE}
-res <- explor::prepare_results(coa1)
+res <- explor::prepare_results(coa_ade4)
 explor::CA_var_plot(res, var_hide = "Row", col_var = pheno$clust)
 ```
 
 ```{r}
-scatterD3::scatterD3(coa1$co[,1], coa1$co[,2], col_var= pheno$clust, ylab = "PC2", xlab="PC1")
+scatterD3::scatterD3(coa_ade4$co[,1], coa_ade4$co[,2], col_var= pheno$clust, ylab = "coa_ade4 PC2", xlab="coa_ade4 PC1")
 ```
 
 
-```{r}
-plot(coa1$co[,1], coa1$co[,2], col=pheno$clust, pch=19)
-```
+## glmPCA- Poisson 
+Generalized principal component analysis (GLM-PCA), a generalization of PCA to exponential family likelihoods propose Poisson and negative binomial likelihood models (Townes et al., 2019).
 
-# glmPCA  
 glmPCA is iterative, so in this example I will set seed so its reproducible. I discuss about the iterative nature of glmPCA below
 
 ```{r}
 set.seed(50)
-coa2<-glmpca::glmpca(mat,L=2,fam="poi")
+glmPCA_coa<-glmpca::glmpca(mat,L=2,fam="poi")
 
-dim(coa2$factors)  # Column scores dim=c(150,   2)
-dim(coa2$loadings) # row scoress dim =c(4989 ,   2)
+dim(glmPCA_coa$factors)  # Column scores dim=c(150,   2)
+dim(glmPCA_coa$loadings) # row scoress dim =c(4989 , 2)
 ```
 
 ```{r}
-plot(coa2$factors$dim1, coa2$factors$dim2, col=pheno$clust, pch=19)
+plot(glmPCA_coa$factors$dim1, glmPCA_coa$factors$dim2, col=pheno$clust, pch=19, xlab="glmPCA, factors, PC1",  ylab="glmPCA, factors, PC2", )
 ```
 
 
-# corral
+## corral
 `corral` from Lauren Hsu uses irlba and sparse matrix representation, providing a fast implementation correspondence analysis in the function `corral`. `corral` accepts input formats `SingleCellExperiment` (Bioconductor), `SparseMatrix`, `matrix`, `data.frame`. See the [dimension reduction vignette]https://www.bioconductor.org/packages/devel/bioc/vignettes/corral/inst/doc/corral_dimred.html from the package for more details.
 
 ```{r}
-coa3<-corral::corral(mat,ncomp=2)
-coa3
-coa3$PCu[1:2,]  # Row coordinates  dims =c(4989,10)
-coa3$PCv[1:2,]  # Col coordinates  dims=c(150,10)
+coa_corral<-corral::corral(mat,ncomp=2)
+coa_corral
+coa_corral$PCu[1:2,]  # Row coordinates  dims =c(4989,10)
+coa_corral$PCv[1:2,]  # Col coordinates  dims=c(150,10)
 
-plot(coa3$PCv[,1], coa3$PCv[,2], col=pheno$clust, pch=19)
+plot(coa_corral$PCv[,1], coa_corral$PCv[,2], col=pheno$clust, pch=19, xlab="coa corral, PC1", ylab="coa corral, PC2")
 ```
 
 
-# Comparing the output of all 3 COA approaches
+## Comparing the output from these COA approaches
 Correlation between correspondence analysis and `corral` is identical
 
 ```{r}
-cor(coa1$co[,1], coa3$PCv[,1])
-cor(coa1$co[,2], coa3$PCv[,2])
+cor(coa_ade4$co[,1], coa_corral$PCv[,1])
+cor(coa_ade4$co[,2], coa_corral$PCv[,2])
 ```
 
 ```{r}
 par(mfrow=c(1,2))
-plot(coa1$co[,1], coa3$PCv[,1])
-plot(coa1$co[,2], coa3$PCv[,2])
+plot(coa_ade4$co[,1], coa_corral$PCv[,1], xlab="coa_ade4, PC1", ylab="coa corral, PC1")
+plot(coa_ade4$co[,2], coa_corral$PCv[,2], xlab="coa_ade4, PC2", ylab="coa corral, PC2")
 ```
 
 Correlation between `glmpca` and `corral`. Note the PCs are flipped, PC1 in `corral` shares r=0.99 correlation with PC2 of `glmpca(type = poi)`. 
 ```{r}
-cor(coa2$factors[,1], coa3$PCv[,2])
-cor(coa2$factors[,2], coa3$PCv[,1])
+cor(glmPCA_coa$factors[,1], coa_corral$PCv[,2])
+cor(glmPCA_coa$factors[,2], coa_corral$PCv[,1])
 ```
 
 ```{r}
 par(mfrow=c(1,2))
-plot(-coa2$factors[,1], coa3$PCv[,2])
-plot(coa2$factors[,2], coa3$PCv[,1])
+plot(-glmPCA_coa$factors[,1], coa_corral$PCv[,2], xlab="glmPCA Poi, PC1", ylab="coa corral, PC2")
+plot(glmPCA_coa$factors[,2], coa_corral$PCv[,1], xlab="glmPCA Poi, PC2", ylab="coa corral, PC1")
 ```
 
 
@@ -344,6 +363,8 @@ sessionInfo()
 # References
 
 Abdi, H., & Valentin, D. (2007). Multiple Correspondence Analysis. In N. Salkind (Ed.), Encyclopedia of Measurement and Statistics (pp. 652–657). Sage Publications, Inc. https://doi.org/10.4135/9781412952644.n299
+
+Baglama, James, and Lothar Reichel. "Augmented implicitly restarted Lanczos bidiagonalization methods." SIAM Journal on Scientific Computing 27.1 (2005): 19-42.
 
 Benzécri, J.-P. (Ed.). (1973). L’analyse des données. 
 

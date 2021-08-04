@@ -1,5 +1,5 @@
 ---
-title: "Principal Component Analysis in R"
+title: "Principal Component Analysis in R; PCA of covariance or correlation matrix"
 author: "Aedin Culhane"
 date: "July 15, 2021"
 output:
@@ -21,10 +21,11 @@ library(knitr)
 opts_chunk$set(echo=TRUE, dpi=100, warnings=FALSE, message=FALSE, warning=FALSE, fig.width = 10, fig.height = 6) 
 ```
 
-### Necessary R libraries
+### R libraries
+Install, if necessary, and load necessary libraries and set up R session. If you are running the docker container or using an instance on the orchestra platform, then you should have these libraries installed already. 
 
 ```{r libraries}
-# Install, if necessary, and load necessary libraries and set up R session
+
 #if (!requireNamespace("BiocManager", quietly = TRUE)) #install.packages("BiocManager")
 library(magrittr)
 library(ade4)
@@ -42,14 +43,10 @@ In R, there are several functions in many different packages that allow us to pe
 * `PCA()` (`FactoMineR`)
 * `dudi.pca()` (`ade4`)
 
-**Note, although `prcomp` sets `scale=FALSE` for consistency with S, in general scaling is advised. We will demonstrate first pca of unscaled and then scaled data. Scaling scaled the variables to have unit variance and is advised before  analysis takes place.** 
-
-We will demonstrate some of these and explore these using exploR
+**Note, although `prcomp` sets `scale=FALSE` for consistency with S, in general scaling is advised. We will demonstrate both prcomp of unscaled and scaled data. Scaling the variables to have unit variance is advised.** 
 
 
-# Equivalents across methods
-
-Give an input matrix P and result res
+Give an input matrix, P and a resulting output, res
 
 |Function | loadings | scores | plot|
 | :------------- |:-------------| :-----| :-----|
@@ -63,8 +60,11 @@ With `ade4::dudi.pca` and `prcomp` the default is `center = TRUE, scale = TRUE`.
 
 With `princomp`, `cor=FALSE` is the default.
 
-#  Create a simple toy dataset
-Create a cloud of points; two vectors, x,y of length 100. 
+
+
+
+#  A simple toy dataset
+We will demonstrate some of these and how the methods relate but first we will create a simple minimal cloud of points; two vectors, x,y of length 100. 
 
 ```{r}
  set.seed(2)             #sets the seed for random number generation.
@@ -89,65 +89,82 @@ Basic histogram of the two distributions:
 ```
  
 
-Plot x,y. Place an "orange" point at the center (`mean(x)`, `mean(y)`) on plot
 
-```{r}                                                                          
-plot(P,asp=1,col=1) #plot points
-points(x=mean(x_obs),y=mean(y_obs),col="orange", pch=19) #show center
+
+# Difference between covariance-based and correlation-based PCA
+
+When performing PCA, you will encounter, two forms of PCA; PCA of a covariance or correlation matrix. 
+
+The difference between these is can be most easily understood in the data pre-processing. In the first vignette in this package, PCA was  computed as a singular value decomposition (SVD) of a column centered, scaled matrix.  This was PCA of the correlation matrix.  If the matrix is centered but not scaled, it is PCA of the covariance matrix. 
+
+
+
+- PCA of a correlation matrix = svd of **scaled**, centered, matrix  (z-score matrix)
+
+# covariance-based PCA
+
+PCA of a covariance matrix can be computed as svd of **unscaled**, centered, matrix
+
+1. Center a matrix
+Recall we had two vector x_obs, y_obs. We can center these columns by subtracting the column mean from each object in the column. We can perform PCA of the covariance matrix is several ways. 
+
+- SVD of the centered matrix
+
+- eigenanalysis of the centered, covariance  matrix
+
+- using prcomp with scale=FALSE (which is the default)
+
+
+## svd of centered data.
+
+$$\$d$$ returns the singular values, not the eigenvalues. 
+```{r}
+Mx<- scale(P, center=TRUE, scale=FALSE)
+(svd(Mx)$d / sqrt(max(1, c(dim(Mx)- 1))))^2
 ```
- 
- 
 
-# Computing via svd of **unscaled**, centered, covariance matrix
-
-PCA can be computed as a singular value decomposition of a column centered matrix. Therefore we first processs the matrix. In this example, we don't scale. This is not advised.
+## Eigen on a covariance matrix 
 
 ```{r}
-#center matrix
-M <- cbind(x_obs-mean(x_obs),y_obs-mean(y_obs))
-Mx<- scale(P, center=TRUE,scale=FALSE)
+MCov <- cov(Mx) 
+eigen(MCov)       
+eigenvalues <-eigen(MCov)$values
+eigenVectors<-eigen(MCov)$vectors
 ```
 
-M equal to Mx, ignore col names
+## prcomp
+
+This is the same as `prcomp` PCA of the unscaled data. By default prcomp will perform decomposition of data that is centered but not scaled (center = TRUE, scale = FALSE)
 ```{r}
-all.equal(M, Mx, check.attributes=FALSE)  
+prcomp(P)
 ```
 
+Note that the eigenvalues are provided as;
 
-# Eigenvector, Eigenvalues of the centered, covariance  matrix
-The eigenvectors of the covariance matrix provide the principal axes, and the eigenvalues quantify the fraction of variance explained in each component. 
-
-creates covariance matrix
-```{r}
-MCov <- cov(M) 
-```
-
-compute eigen values and vectors
-```{r}
-eigenvalues <- eigen(MCov)$values       
-eigenvalues
-```
-
-(This is the same as `prcomp` PCA of the unscaled data)
 ```{r}
 prcomp(P)$sdev^2 
 ```
 
-and similar to `princomp`
+and this is also similar to `princomp`
 
 ```{r}
 princomp(P)$sdev^2   
 ```
 
+eigenvector from the eigenanalysis of the covariance matrix equal the rotation matrix of prcomp.
 
 ```{r}
-eigenVectors <- eigen(MCov)$vectors     
-eigenVectors
+print("$v right singular vectors of svd of centered matrix")
+svd(Mx)$v
 ```
 
-which is equivalent to 
+```{r}
+print("eigen of covariance matrix")
+eigen(MCov)$vectors  
+```
 
 ```{r}
+print("prcomp of centered but not scaled (default options) matrix")
 prcomp(P)$rotation
 ```
 
@@ -156,7 +173,7 @@ The right singular vectors are the eigenvectors of M^t^M. Next I plot the princi
 ```{r}
 plot(P,asp=1,col=1) #plot points
 points(x=mean(x_obs),y=mean(y_obs),col="orange", pch=19) #show center
-lines(x_obs,eigenVectors[2,1]/eigenVectors[1,1]*M[x]+mean(y_obs),col=8)
+lines(x_obs,eigenVectors[2,1]/eigenVectors[1,1]*Mx[x]+mean(y_obs),col=8)
 ```
 
 This shows the first principal axis. Note that it passes through the mean as expected. The ratio of the eigenvectors gives the slope of the axis. 
@@ -166,67 +183,53 @@ Next plot the second principal axis, orthogonal to the first
 ```{r}
 plot(P,asp=1,col=1) #plot points
 points(x=mean(x_obs),y=mean(y_obs),col="orange", pch=19) #show center
-lines(x_obs,eigenVectors[2,1]/eigenVectors[1,1]*M[x]+mean(y_obs),col=8)
-lines(x_obs,eigenVectors[2,2]/eigenVectors[1,2]*M[x]+mean(y_obs),col=8)
+lines(x_obs,eigenVectors[2,1]/eigenVectors[1,1]*Mx[x]+mean(y_obs),col=8)
+lines(x_obs,eigenVectors[2,2]/eigenVectors[1,2]*Mx[x]+mean(y_obs),col=8)
 ```
 shows the second principal axis, which is orthogonal to the first (recall that the matrix V^t^ in the singular value decomposition is orthogonal). This can be checked by noting that the second principal axis is also, as the product of orthogonal slopes is -1. 
 
-## PCA (scaled data) using Singular value decomposition  (svd)
+# Correlation-based PCA
 
-Given a matrix X of dimension n × p, SVD decomposes it to:
-
-$$M = U D V^{t}$$
-
-U,V define the left and right singular values 
-
-U and V are square orthogonal:
-
-$$UU^{t} = I_{p}$$
-$$VV^{t} = I_{n}$$
-
-The output is 
-
-d	- a vector containing the singular values 
-u	- the left singular vectors 
-v	- the right singular vectors of x
-
-Relating to `prcomp`;
-
-The columns u from the SVD correspond to the principal components x in the PCA. 
-
-Furthermore, the matrix v from the SVD is equivalent to the rotation matrix returned by prcomp.
-
-Now repeat the code above but **scale** and **center** the data with `scale(P, center=TRUE, scale=TRUE)`.
+Correlation-based PCA can be computed by singular value decomposition (svd) of centered and scaled matrix. So we can repeat the code above but **scale** and **center** the data with `scale(P, center=TRUE, scale=TRUE)`.  By default scale will center and scale
 
 ```{r}
-any(M == scale(P))  #FALSE
-all(scale(P, center=TRUE, scale=TRUE)== scale(P)) #TRUE
+scale
 ```
 
-### `scale(P, center=TRUE, scale=TRUE)`
+
+## svd of z-score scaled data.
+
 ```{r}
 p0<-svd(scale(P))
-
-p0$d          #the singular values
-p0$v          #the right singular vectors
+p0$d         #the singular values
+p0$v        #the right singular vectors
 ```
 
-The eigenvalues are
+
+Recall, SVD returns a list with components
+
+d	= a vector containing the singular values of x, of length min(n, p), in descending order
+
+u	= a matrix whose columns contain the left singular vectors of x, present if nu > 0. Dimension c(n, nu).
+
+v	= a matrix whose columns contain the right singular vectors of x, present if nv > 0. Dimension c(p, nv).
+
+where the product of these matrix $$X = U D V'$$  recovers the original matrix;
 ```{r}
-diag(p0$d)
+(p0$u %*% diag(p0$d) %*% t(p0$v))%>% head
 ```
-
-Which is 
+which equals the scaled matrix that was decomposed using svd
 
 ```{r}
-diag(t(p0$u) %*% M %*% p0$v)
+scale(P)%>% head
 ```
 
-Eigenvalues from svd on the scaled data. The diagonal elements of d from the SVD are proportional to the standard deviations (`sdev`) returned by PCA. 
 
-The elements of d are formed by taking the sum of the squares of the principal components but not dividing by the sample size.
+ 
 
-Therefore we can devide by the sample size, which is either the ncol or nrow of the matrix -1. 
+The elements of d are formed by taking the sum of the squares of the principal components but not dividing by the rank. Therefore we can divide by the rank, which is user-defined or min of the ncol or nrow of the matrix -1. 
+
+The diagonal elements of d from the SVD are proportional to the standard deviations (`sdev`) returned by PCA. 
 
 ```{r}
 p0$d^2/(nrow(p0$u) - 1)
@@ -234,9 +237,9 @@ eigenValues= p0$d^2/(nrow(p0$u) - 1)
 eigenValues
 ```
 
-Summary of eigs
+Summary of output from svd
 ```{r}
-eigSummary<-function(svdRes,sf=4){
+svdSummary<-function(svdRes,sf=4){
   if(is(svdRes,"prcomp")){
     eigenvalue=svdRes$sdev^2
   }else{
@@ -251,32 +254,11 @@ eigSummary<-function(svdRes,sf=4){
 }
 
 
-eigSum.svd <-eigSummary(p0)
+eigSum.svd <-svdSummary(p0)
 eigSum.svd 
 ```
 
-
-## Demonstrating X = U D V' 
-SVD returns a list with components
-
-d	= a vector containing the singular values of x, of length min(n, p), in descending order
-
-u	= a matrix whose columns contain the left singular vectors of x, present if nu > 0. Dimension c(n, nu).
-
-v	= a matrix whose columns contain the right singular vectors of x, present if nv > 0. Dimension c(p, nv).
-
-The product of these matrix X = U D V'  recovers the original matrix;
-```{r}
-(p0$u %*% diag(p0$d) %*% t(p0$v))%>% head
-```
-which equals the scaled matrix that was decomposed using svd
-
-```{r}
-scale(P)%>% head
-```
-
-
-## Comparing to prcomp
+##  prcomp (scale = TRUE)
 
 First `stats::prcomp`.  The eigenvectors are stored in `$rotation`. Note these are the same as `svd$v` on scale data 
 ```{r}
@@ -312,9 +294,11 @@ eigSum.pca= cbind(
 eigSum.pca
 ```
 
+which is the same as;
 ```{r}
-identical(eigSum.svd,eigSum.pca)
+eigSum.svd
 ```
+
 
 
 If we had more components, we could generate a scree plot. Its not very useful with 2 components, but here is the code
@@ -330,7 +314,7 @@ plot(ProportionVariance, xlim = c(0, 5), type = "b", pch = 16, xlab = "principal
     ylab = "variance explained")
 ```
 
-# `princomp`
+## `princomp`
 `princomp` was written for compatiblity with S-PLUS however it is not recommended. Its is better to use prcomp or svd. That is because by default `princomp` performs a decompostion of the covariance not correlation matrix. `princomp` can call `eigen` on the correlation or covariance matrix. Its default calculation uses divisor N for the covariance matrix.
 
 ```{r}
@@ -354,7 +338,7 @@ p2$loadings
 head(p2$scores,2)
 ```
 
-Set `cor = TRUE` in your call to princomp in order to perform PCA on the correlation matrix (instead of the covariance matrix)
+Set `cor = TRUE` in the call to princomp in order to perform PCA on the correlation matrix (instead of the covariance matrix)
 
 ```{r}
 p2b<-princomp(P, cor = TRUE)
@@ -383,7 +367,7 @@ The eigenvalues, same as `eigSum` and `eigSum.svd` above
 t(p3$eig)
 ```
 
-# correlations between variables and PCs
+ correlations between variables and PCs
 ```{r}
 p3$var$coord  
 ```
@@ -451,27 +435,9 @@ p4$c1$CS1 * sqrt(p4$eig[1])
 ```
 
 
-# Z-score normalization
-
-The default version of scale is a z-score standarization
-
-```{r}
-zscore<- function(x) (x-mean(x))/sd(x)
-PZ<-apply(P,2, zscore)
-all(PZ== scale(P))
-data.frame(mean=round(colMeans(PZ)), sd= apply(PZ,2, sd))
-```
-
-Then by extension, a P0, svd of a scaled matrix is the same as svd of a z-score matrix
-
-```{r}
-pz<-svd(PZ)
-all(pz$v == p0$v)
-all(pzEigs<-pz$d^2/(nrow(pz$u) - 1) ==eigs)
-```
 
 
-## Comparision of results of different methods
+## Comparision of results of these different PCA methods
 
 There is also a nice package called `factoextra`. This works all of the above classes
 

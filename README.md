@@ -8,7 +8,7 @@
 
 
 ##  Description
-This workshop will provide a beginner's guide to matrix factorization, principal component analysis (PCA), the difference between singular value decomposition, different forms of PCA and fast PCA for single-cell data. We will describe how to detect artifacts and select the optimal number of components. It will focus on SVD, PCA applied single-cell data.
+This workshop will provide a beginner's guide to matrix factorization, principal component analysis (PCA), the difference between singular value decomposition, different forms of PCA and fast PCA for single-cell data as well as correspondence analysis and decomposition of the Pearson Residuals. We will describe how to detect artifacts and select the optimal number of components. It will focus on SVD, PCA, COA applied toy datasets and single-cell data.
 
 Principal component analysis (PCA) is a key step in many bioinformatics pipelines. In this interactive session we will take a deep dive into the various implementations of singular value decomposition (SVD) and principal component analysis (PCA) to clarify the relationship between these methods, and to demonstrate the equivalencies and contrasts between these methods. We will describe correspondence analysis (COA) and demonstrate how it differs from PCA. We will also discuss interpretation of outputs, as well as some common pitfalls and sources of confusion in utilizing these methods.
  
@@ -28,7 +28,7 @@ We invite audience members to engage with questions and examples from their own 
  
 ### Time outline
 - Set-up + package installation (5 min)
-- Introduction to matrix factorization and PCA [conceptual] (15 min)
+- Introduction to matrix factorization and PCA [conceptual] (25 min)
 - Interactive demonstration of methods (25 min)
 - Potential pitfalls, interpreting outputs, and how to decide what’s right for your pipeline (15 min)
  
@@ -48,7 +48,10 @@ Upon completion of this workshop, we expect participants to have gained an under
 3. Apply COA on real data
 4. Creating plots to interpret PCA/SVD outputs, including diagnosis of problems like arch/horseshoe effect
 
-
 ## Installation
 
-You can install the released version of PCAworkshop from 
+You can view, install the released version of PCAworkshop from [github](https://aedin.github.io/PCAworkshop/) 
+
+or run it interactively on the [orchestra](http://app.orchestra.cancerdatasci.org/) cloud platform
+
+Slides are [online](https://docs.google.com/presentation/d/1VUcKvvb_nZAXyVBwGpQ_gndO5uLoz2UqtWHVtwbMWxg/edit#slide=id.p3)
